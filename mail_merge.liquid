@@ -20,36 +20,13 @@ What Organization Logo do you want in your header?
 				 If you'd rather provide your own styles, add them to the style section below. -->
     
     <style>
-
-			
-
-}
-
-      	.person { page-break-inside: avoid; }
-        .avatar { width: 200px; }
-      	.household { padding-left: 15px; }
-      	.family_member { width: 100px; float: left; padding-right: 15px; }
-      	img.family_member_avatar { 
-          height: 50px;
-          width: 50px;
-          border-radius: 25px;
-          -webkit-border-radius: 25px;
-          -moz-border-radius: 25px;
-					}
-      	img.thumbnail {
-          height: 50%;
-          width: 50%;
-         border-radius: 200px;
-          -webkit-border-radius: 50px;
-          -moz-border-radius: 50px;
-        }
-      	img.primary_contact { border: 2px solid #5cd595; }
-      	.family_member_name { text-align: center; padding-top: 3px; }
-      	.tab { width: 49%; float: left; padding: 10px; }
-      	.tab-title { font-size: 1.3em; background-color: #eee; padding: 5px; border: 1px solid #eee; }
-      	.answer { padding: 5px; border: 1px solid #eee; border-top: 0px; }
+      	.person { page-break-inside: avoid; page-break-after: always;}
+      	img.org-logo {height: 80px;}
     </style>
   </head>
+  
+  
+  <!-- This is what makes the "Print to PDF" link at the top" -->
   <body>
     <div class="hidden-print">
       <div class="alert alert-warning hidden-print" role="alert">
@@ -57,34 +34,41 @@ What Organization Logo do you want in your header?
       </div>    
     </div>
     
+    
+    <!-- This container is what gives your letter margins. -->
     <div class="container">
-      <div class="pull-right">
-
-      <div class="clearfix"></div>
-
+      
+      
+      
       {% for person in sorted_people %}
+      <!-- Everything in the following "person" div gets repeated for each person in your list -->
       <div class="person">
-        <div class="pull-right">
-          <div class="text-right text-muted">
-            <!-- Created: {{ person.created_at | date: "%b %d, %Y" }}<br>
-            Last Updated: {{ person.updated_at | date: "%b %d, %Y" }} -->
-          </div>
-        </div>
-
-
+       
         
-        <!-- This is where the Letter Content starts
-				First is the Organization Name. Comment this out if you have your own letterhead your're printing on. -->
-       <div>
+        <!-- This is where the Letter Content starts the <br> give margin at the top of your page. 
+				Add or remove <br> to make it fit your stationary. -->
+       <div><br><br>
          
-        <div class="pull-right">
+        <!-- Make your logo justify right -->
+         <div class="pull-right"> 
         
-        <img class="avatar" src="{{ org_logo }}"></div>
+        <!-- If your not using a logo delete the <img class="org-logo" src="{{ org_logo }}"></div> line below.
+					You can adjust the size by changing height 80px above where it says img.org.logo.-->   
+        <img class="org-logo" src="{{ org_logo }}"></div>
         
         
+        
+        <!-- If you don't want your Organization Name at the top delete the {{organization.name}} below -->
         <h2>
-          {{ organization.name }}</h2><hr><br><br><br><br>
-        <!-- This is the Address on the right hand side. -->  
+          {{ organization.name }}</h2><hr>
+         
+         
+         
+         <!-- Add or remove <br> to adjust the spacing below Organization Name and the salutation. -->
+         <br><br><br><br>
+        
+         
+         <!-- This is the Address on the right hand side. -->  
           <div class="pull-right">
             
           <div class="text-right text-muted">
@@ -96,15 +80,23 @@ What Organization Logo do you want in your header?
                           {% endfor%}               
                       {% endif %}
           </div>
+          
+            
+          
+          <!-- This is the Salutation. -->  
           <div class="media-body">
-            <h4 class="media-heading">Dear {{ person.name_prefix }}
+          <h4 class="media-heading">Dear {{ person.name_prefix }}
                   {{ person.first_name }}
                   {{ person.middle_name }}
                   {{ person.last_name }}
                   {{ person.name_suffix }}Family,
               <br>
               <br>
-            </h4>
+            </h4> 
+            
+            
+            
+            <!-- This is the body of your letter. Put two <br> at the end of each paragraph. -->
             <body><p>
               
    
@@ -116,57 +108,15 @@ Calvary Baptist Church has the best volunteers I’ve ever had the privilege to 
 January 2017 will kickoff with Baptism and new D1 & D2 classes! This year we will walk through the stories in the Old Testament as we see how story after story God calls his broken people to find hope in him.<br>
 This year’s Christmas offering will go toward the hallway floors that desperately need replaced. Christmas Eve we will give a special offering to the Salvation Army. Because God has blessed us we will bless our community! Thank you for your faithful giving to help broken people find hope!<br><br>
 <br><br>
-Pastor Ron Hudson 
-            </body></p>
-            <div>
-              
-            
-            <!-- {% if print_apps %}
-              <h5>
-                  {% for app in person.apps %}
-                    <span class="label label-default">{{ app.name }}</span>
-                  {% endfor %}
-              </h5>
-            {% endif %} -->
-          </div>                
+Pastor Ron Hudson
+            </body></p>           
         </div>
-        
-        
 
-
-          <!-- CUSTOM TABS -->
-        
-        		<!-- You can also call fields directly! EXAMPLE:
-								{{ person.tab_name.field_name.value }} or
-								{{ person.tab_name.section_name.field_name.value }}
-
-								Use {{tab.slug}} or {{field.slug}} within a loop to get the exact tab and field names
-						-->
-        
-              <div class="row">
-                {% for tab in person.tabs %}
-                	{% if my_tabs == 'All' or my_tabs contains tab.name %}
-                    <div class="tab">
-												<div class="tab-title">{{ tab.name }}</div>
-
-                        {% for field in tab.fields %}
-                          <div class="questions">
-                              <div class="answer">
-                                <strong>{{ field.name }}</strong>
-                                <span> {{ field.value }}</span>
-                              </div>
-                          </div>
-                        {% endfor %}
-
-                    </div>
-                	{% endif %}
-                {% endfor %}
-              </div>
-          <!-- end CUSTOM TABS -->
         
       </div>
-      
-      {% endfor %}
+  </div>
+  </div>
+    {% endfor %}
     </div>
   </body>
 </html>
