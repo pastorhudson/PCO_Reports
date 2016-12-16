@@ -1,0 +1,172 @@
+<!--
+
+How would you like your people sorted? ('first_name', 'last_name')
+{% assign sorted_people = people | sort: 'last_name' %}
+
+What Organization Logo do you want in your header?
+{% assign org_logo = 'https://avatars.planningcenteronline.com/uploads/organization/35565-1346205702/avatar.4.png'%}
+-->
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    {{ helpers.bootstrap_3 }}
+    <!-- This report is styled using the Bootstrap framework. http://getbootstrap.com/css/ 
+				 If you'd rather provide your own styles, add them to the style section below. -->
+    
+    <style>
+
+			
+
+}
+
+      	.person { page-break-inside: avoid; }
+        .avatar { width: 200px; }
+      	.household { padding-left: 15px; }
+      	.family_member { width: 100px; float: left; padding-right: 15px; }
+      	img.family_member_avatar { 
+          height: 50px;
+          width: 50px;
+          border-radius: 25px;
+          -webkit-border-radius: 25px;
+          -moz-border-radius: 25px;
+					}
+      	img.thumbnail {
+          height: 50%;
+          width: 50%;
+         border-radius: 200px;
+          -webkit-border-radius: 50px;
+          -moz-border-radius: 50px;
+        }
+      	img.primary_contact { border: 2px solid #5cd595; }
+      	.family_member_name { text-align: center; padding-top: 3px; }
+      	.tab { width: 49%; float: left; padding: 10px; }
+      	.tab-title { font-size: 1.3em; background-color: #eee; padding: 5px; border: 1px solid #eee; }
+      	.answer { padding: 5px; border: 1px solid #eee; border-top: 0px; }
+    </style>
+  </head>
+  <body>
+    <div class="hidden-print">
+      <div class="alert alert-warning hidden-print" role="alert">
+        <a href="https://people.planningcenteronline.com/reports/{{ report.id }}.pdf?list_id={{list.id}}" class="alert-link">Print to PDF</a>
+      </div>    
+    </div>
+    
+    <div class="container">
+      <div class="pull-right">
+
+      <div class="clearfix"></div>
+
+      {% for person in sorted_people %}
+      <div class="person">
+        <div class="pull-right">
+          <div class="text-right text-muted">
+            <!-- Created: {{ person.created_at | date: "%b %d, %Y" }}<br>
+            Last Updated: {{ person.updated_at | date: "%b %d, %Y" }} -->
+          </div>
+        </div>
+
+
+        
+        <!-- This is where the Letter Content starts
+				First is the Organization Name. Comment this out if you have your own letterhead your're printing on. -->
+       <div>
+         
+        <div class="pull-right">
+        
+        <img class="avatar" src="{{ org_logo }}"></div>
+        
+        
+        <h2>
+          {{ organization.name }}</h2><hr><br><br><br><br>
+        <!-- This is the Address on the right hand side. -->  
+          <div class="pull-right">
+            
+          <div class="text-right text-muted">
+            {% if person.addresses != empty %}
+                          {% for address in person.addresses %}
+                            <address>
+                              {{ address.postal_address }} <!--({{ address.location }})-->
+                            </address>
+                          {% endfor%}               
+                      {% endif %}
+          </div>
+          <div class="media-body">
+            <h4 class="media-heading">Dear {{ person.name_prefix }}
+                  {{ person.first_name }}
+                  {{ person.middle_name }}
+                  {{ person.last_name }}
+                  {{ person.name_suffix }}Family,
+              <br>
+              <br>
+            </h4>
+            <body><p>
+              
+   
+This marks twelve years for Pastor Joe and I as ordained Pastors at CBC. But it is one year and seven months into my tenure as Lead Pastor. It has gone by so fast! This year we had seven people baptized, and at least sixty professions of faith! Another D1 and D2 class has graduated. We have seventy-four people meeting regularly in twelve different small groups! That doesn’t even count the children who also meet in small groups Sunday Morning.<br><br>
+I’m so thankful for the faithful service of Pastor Joe who has coordinated our new parking, two driveways, bathroom remodeling, our transportation team & fleet, and is continuing the hard work of planning and preparation for our new building project.<br> <br>
+Johnell has done an amazing job recruiting and training a top notch children's ministry team! One visitor just told me they decided to become a part of our church in part because our children’s ministry is so organized and well run. I know how much our kids ministry workers care about their students, and I couldn't be more proud of the work they do every week on Sundays and Wednesdays.<br><br>
+Our youth group is continuing to grow. We have 8 adults leading youth small groups! We just had to branch one of our middle school boys small groups because it just keeps growing!<br> <br>
+Calvary Baptist Church has the best volunteers I’ve ever had the privilege to serve with! On an average Sunday Morning there are about 35 people volunteering to serve every week! They serve because they want to help broken people find hope in Jesus Christ. That is why we are here.<br><br>
+January 2017 will kickoff with Baptism and new D1 & D2 classes! This year we will walk through the stories in the Old Testament as we see how story after story God calls his broken people to find hope in him.<br>
+This year’s Christmas offering will go toward the hallway floors that desperately need replaced. Christmas Eve we will give a special offering to the Salvation Army. Because God has blessed us we will bless our community! Thank you for your faithful giving to help broken people find hope!<br><br>
+<br><br>
+Pastor Ron Hudson 
+            </body></p>
+            <div>
+              
+            
+            <!-- {% if print_apps %}
+              <h5>
+                  {% for app in person.apps %}
+                    <span class="label label-default">{{ app.name }}</span>
+                  {% endfor %}
+              </h5>
+            {% endif %} -->
+          </div>                
+        </div>
+        
+        
+
+
+          <!-- CUSTOM TABS -->
+        
+        		<!-- You can also call fields directly! EXAMPLE:
+								{{ person.tab_name.field_name.value }} or
+								{{ person.tab_name.section_name.field_name.value }}
+
+								Use {{tab.slug}} or {{field.slug}} within a loop to get the exact tab and field names
+						-->
+        
+              <div class="row">
+                {% for tab in person.tabs %}
+                	{% if my_tabs == 'All' or my_tabs contains tab.name %}
+                    <div class="tab">
+												<div class="tab-title">{{ tab.name }}</div>
+
+                        {% for field in tab.fields %}
+                          <div class="questions">
+                              <div class="answer">
+                                <strong>{{ field.name }}</strong>
+                                <span> {{ field.value }}</span>
+                              </div>
+                          </div>
+                        {% endfor %}
+
+                    </div>
+                	{% endif %}
+                {% endfor %}
+              </div>
+          <!-- end CUSTOM TABS -->
+        
+      </div>
+      
+      {% endfor %}
+    </div>
+  </body>
+</html>
