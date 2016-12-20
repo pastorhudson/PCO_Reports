@@ -77,6 +77,7 @@ Do you want Organization Logo in the footer?
         {% if org_name != 'false' %}
         <h2>
           {{ organization.name }}</h2><hr>
+         
          {% endif %}
          
          <!-- Add or remove <br> to adjust the spacing below Organization Name and the salutation. -->
@@ -92,7 +93,10 @@ Do you want Organization Logo in the footer?
                             <address>
                               {{ address.postal_address }} <!--({{ address.location }})-->
                             </address>
-                          {% endfor%}               
+                          {% endfor%} 
+            <!-- If there's no address keep the spacing the same on the letter! -->
+            {% else %}
+       		  <br><br><br><br>
                       {% endif %}
           </div>
           
@@ -115,13 +119,9 @@ Do you want Organization Logo in the footer?
             <body><p>
               
    
-This marks twelve years for Pastor Joe and I as ordained Pastors at CBC. But it is one year and seven months into my tenure as Lead Pastor. It has gone by so fast! This year we had seven people baptized, and at least sixty professions of faith! Another D1 and D2 class has graduated. We have seventy-four people meeting regularly in twelve different small groups! That doesn’t even count the children who also meet in small groups Sunday Morning.<br><br>
-I’m so thankful for the faithful service of Pastor Joe who has coordinated our new parking, two driveways, bathroom remodeling, our transportation team & fleet, and is continuing the hard work of planning and preparation for our new building project.<br> <br>
-Johnell has done an amazing job recruiting and training a top notch children's ministry team! One visitor just told me they decided to become a part of our church in part because our children’s ministry is so organized and well run. I know how much our kids ministry workers care about their students, and I couldn't be more proud of the work they do every week on Sundays and Wednesdays.<br><br>
-Our youth group is continuing to grow. We have 8 adults leading youth small groups! We just had to branch one of our middle school boys small groups because it just keeps growing!<br> <br>
-Calvary Baptist Church has the best volunteers I’ve ever had the privilege to serve with! On an average Sunday Morning there are about 35 people volunteering to serve every week! They serve because they want to help broken people find hope in Jesus Christ. That is why we are here.<br><br>
-January 2017 will kickoff with Baptism and new D1 & D2 classes! This year we will walk through the stories in the Old Testament as we see how story after story God calls his broken people to find hope in him.<br><br>
-This year’s Christmas offering will go toward the hallway floors that desperately need replaced. On Christmas Eve we will give a special offering to the Salvation Army in honor of those in attendence. Because God has blessed us, we will bless our community! Thank you for your faithful giving to help broken people find hope!<br><br>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras nec nibh nec mi vestibulum facilisis et fringilla sem. Sed semper vitae mauris sit amet tempus. Donec malesuada urna vitae urna hendrerit feugiat. Cras blandit tincidunt risus id venenatis. Maecenas sodales magna tempus lacus placerat euismod. Pellentesque elementum, tellus et consectetur dapibus, nulla nulla eleifend turpis, nec mattis massa elit ac ante. Nullam id neque odio. Nam sagittis et odio vel pretium. In porttitor tristique elementum. Nam a auctor orci. Aliquam auctor ipsum a enim pulvinar fringilla. Etiam hendrerit semper arcu, eu pellentesque leo. Nullam faucibus mauris eget aliquam laoreet. Integer aliquet tristique turpis, id dapibus sem placerat mollis. Sed posuere, felis non consequat vestibulum, nisi dolor ultrices justo, id consequat erat odio in nibh.<br><br>
+Maecenas vitae nisi vulputate nisl finibus tempus id eu lectus. Fusce erat velit, consectetur rutrum ipsum sit amet, vestibulum commodo tortor. Curabitur ac mi lectus. Aliquam enim est, lobortis nec pharetra eget, pretium sit amet nisl. Nulla vehicula tristique convallis. Sed sit amet accumsan justo. Aenean vel dapibus augue. Proin nec nibh ex. In viverra maximus vestibulum. Nam molestie nisi eget aliquam ornare. Nulla tincidunt sem id sollicitudin elementum. Nam pellentesque risus tellus, eget rutrum tortor rhoncus sed. Vivamus pulvinar ligula ac lobortis ullamcorper. Suspendisse dictum in ante ac tincidunt. Quisque placerat elit eros, ut cursus mi consequat tempor. Praesent tincidunt accumsan arcu fermentum sollicitudin.<br><br>
+Morbi ut nulla ut massa consequat viverra. Mauris ex sem, mollis nec pellentesque nec, maximus vitae dui. Etiam ut posuere quam. Phasellus volutpat diam ex, quis consequat dolor placerat dictum. Proin sem neque, facilisis eget sem ut, tincidunt consequat elit. Suspendisse justo libero, ullamcorper sit amet tempor quis, maximus maximus ligula. Praesent molestie tempor ligula non tempor. Morbi aliquam massa quis lorem luctus venenatis. Nulla a risus hendrerit, egestas ex vitae, porttitor risus. Aenean augue massa, varius vitae mollis quis, viverra sit amet purus. Sed accumsan mollis pellentesque. Aliquam eget neque sed erat finibus laoreet ac id dolor. Quisque convallis, libero in bibendum pretium, ligula quam rutrum est, vel dictum dui purus sed felis. Sed in pellentesque ex.<br><br>
                 
               <!-- This is the code for the footer logo -->
               {% if org_flogo != 'false' %}
