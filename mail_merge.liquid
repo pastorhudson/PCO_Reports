@@ -17,7 +17,7 @@ Do you want Organization Logo in the header?
 
 Do you want Organization Logo in the footer?
 {% assign org_flogo = 'true'%}
-{% assign letter_body = "This is a super test" %}
+{% assign letter_body = "This is the body of the letter." %}
 
 
 -->
@@ -62,7 +62,7 @@ Do you want Organization Logo in the footer?
         <input type="checkbox" id="checkAddr">Address</input>
         <input type="checkbox" id="checkOrgHeaderLogo">Header Logo</input><br/>
 				<input type="checkbox" id="checkOrgFooterLogo">Footer Logo</input>
-				<input type="text" id="letterBody">Body</input>
+				<input type="text" id="letterTxt">Body</input>
     </div>
     
 <div id=mainContent class="blurred">
@@ -140,7 +140,10 @@ Do you want Organization Logo in the footer?
               
             <p>
               
-              {{letter_body}}
+              Some Text.
+              </p>
+            </div>
+            
    
 
               <!-- This is the code for the footer logo -->
@@ -177,7 +180,7 @@ Do you want Organization Logo in the footer?
         are removed from the document. If the user unchecks all the boxes, a worning is presented
         and the page reloads.
       */
-      function setPrefs(org_name, addr, org_hlogo, org_flogo, letter_body) {
+      function setPrefs(org_name, addr, org_hlogo, org_flogo, letterTxt) {
           $('div#selection').css({
               "display": "none"
           });
@@ -206,12 +209,15 @@ Do you want Organization Logo in the footer?
         	      });
         	  }
        
-        window.alert(letter_body);
+        	if (letterTxt) {
+        	      window.alert(letterTxt);
+                
+        	  }
         
         /*	if (letter_body != "") {
-        	      $('.letter_body').appendChild(letter_body);
+        	      $('.letter_body').appendChild(letterTxt);
         	      $('.letter_body').each(function() {
-        	          $(this).appendChild(letter_body);
+        	          $(this).appendChild(letterTxt);
         	      });
                 
         	  } */
@@ -229,7 +235,7 @@ Do you want Organization Logo in the footer?
           document.getElementById("checkAddr").checked = true;
           document.getElementById("checkOrgHeaderLogo").checked = true;
           document.getElementById("checkOrgFooterLogo").checked = true;
-          document.getElementById("letterBody").value = "Put Letter Content Here!";
+          document.getElementById("letterTxt").value = "Put Letter Content Here!";
           $('#selection').dialog({
               title: "Printing Preferences",
               position: {
@@ -244,8 +250,8 @@ Do you want Organization Logo in the footer?
                           addr = document.getElementById("checkAddr").checked,
                           org_hlogo = document.getElementById("checkOrgHeaderLogo").checked,
                      			org_flogo = document.getElementById("checkOrgFooterLogo").checked,
-                          letter_body = document.getElementById("letterBody").value;
-                          setPrefs(org_name, addr, org_hlogo, org_flogo, letter_body);
+                          letterTxt = document.getElementById("letterTxt").value;
+                          setPrefs(org_name, addr, org_hlogo, org_flogo, letterTxt);
                           $(this).dialog('close');
                   }
               }],
