@@ -17,79 +17,106 @@ Do you want Organization Logo in the header?
 
 Do you want Organization Logo in the footer?
 {% assign org_flogo = 'true'%}
+{% assign letter_body = "This is a super test" %}
 
 
 -->
 
 
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://bootswatch.com/paper/bootstrap.min.css" />
     <meta charset="utf-8">
-    {{ helpers.bootstrap_3 }}
-    <!-- This report is styled using the Bootstrap framework. http://getbootstrap.com/css/ 
+    {{ helpers.bootstrap_3 }}<!-- This report is styled using the Bootstrap framework. http://getbootstrap.com/css/ 
 				 If you'd rather provide your own styles, add them to the style section below. -->
     
+    
+    
     <style>
-      	.person { page-break-inside: avoid; page-break-after: always;}
-      	img.org-logo {height: 70px;}
+      @page{margin: 0.5in; size: US-Letter, landscape;}
+      @media print{ div#selection{display:none;} 
+      a{text-decoration:none;color:black;} }
+      body{font-size:14px;}
+      img#logo{float:right;width:auto;height:1in;}
+      tr{font-size:14px;}
+      
+      h3{font-size:1.1em;float:left; display:block; margin:0.25in auto;}
+      .blurred{filter: blur(5px); -webkit-filter: blur(5px); -moz-filter: blur(5px); -o-filter: blur(5px); -ms-filter: blur(5px);}
+
+      .person { page-break-inside: avoid; page-break-after: always;}
+      img.org-logo {height: 70px;}
     </style>
   </head>
   
   
-  <!-- This is what makes the "Print to PDF" link at the top" -->
+  
   <body>
-    <div class="hidden-print">
+    <!--  JQuery turns the following div into a dialog and is used for selecting one's printing prefrences.
+    After the dialog is closed, JQuery sets its display to 'none' via CSS (which prevents the dialog from
+    being visible at print) and un-blurs the report -->
+    <div id="selection">
+        <input type="checkbox" id="checkOrgTitle">Title Header</input>
+        <input type="checkbox" id="checkAddr">Address</input>
+        <input type="checkbox" id="checkOrgHeaderLogo">Header Logo</input><br/>
+				<input type="checkbox" id="checkOrgFooterLogo">Footer Logo</input>
+				<input type="text" id="letterBody">Body</input>
+    </div>
+    
+<div id=mainContent class="blurred">
+
+  <!-- This is what makes the "Print to PDF" link at the top" 
+  
+<div class="hidden-print">
       <div class="alert alert-warning hidden-print" role="alert">
         <a href="https://people.planningcenteronline.com/reports/{{ report.id }}.pdf?list_id={{list.id}}" class="alert-link">Print to PDF</a>
       </div>    
-    </div>
+    </div> 
+-->
     
     
     <!-- This container is what gives your letter margins. -->
-    <div class="container">
+    <div class="media-body">
       
       
       
       {% for person in sorted_people %}
       <!-- Everything in the following "person" div gets repeated for each person in your list -->
       <div class="person">
-       
-        
-        <!-- This is where the Letter Content starts the <br> give margin at the top of your page. 
-				Add or remove <br> to make it fit your stationary. -->
-       <div><br><br><br><br><br><br><br>
+       <div class='media-body'>
+         
          
        
-         {% if org_hlogo != 'false' %}
-        	<!-- If your not using a logo delete the <img class="org-logo" src="{{ org_logo }}"></div> line below.
-					You can adjust the size by changing height 80px above where it says img.org.logo.-->   
-        	<!-- Make your logo justify right -->
-          <div class="pull-right">
+         <div class='org_hlogo'>
+        	
+          <div class="pull-right"><br>
          	<img class="org-logo" src="{{ org_logo }}"></div>
          
-         	{% endif %}
-        
-        
-        {% if org_name != 'false' %}
-        <h2>
-          {{ organization.name }}</h2><hr>
-         {% endif %}
+         </div>
          
-         <!-- Add or remove <br> to adjust the spacing below Organization Name and the salutation. -->
-         <br><br><br>
-        
+         <div class='orgName'>
+        	<h2>
+          {{ organization.name }}
+            <br><hr></h2>
+         </div>
+         <br>
+       
          
          <!-- This is the Address on the right hand side. -->  
           <div class="pull-right">
             
-          <div class="text-right text-muted">
+          <div class="text-right text-muted AddrHead">
             {% if person.addresses != empty %}
                           {% for address in person.addresses %}
                             <address>
                               {{ address.postal_address }} <!--({{ address.location }})-->
                             </address>
-                          {% endfor%}               
+                          {% endfor%} 
+            <!-- If there's no address keep the spacing the same on the letter! -->
+            {% else %}
+       		  <br><br><br><br>
                       {% endif %}
           </div>
           
@@ -99,9 +126,9 @@ Do you want Organization Logo in the footer?
           <div class="media-body">
           <h4 class="media-heading">Dear {{ person.name_prefix }}
                   {{ person.first_name }}
-                 <!-- {{ person.middle_name }} -->
+                  {{ person.middle_name }}
                   {{ person.last_name }}
-                  <!-- {{ person.name_suffix }} -->Family,
+                  {{ person.name_suffix }}Family,
               <br>
               <br>
             </h4> 
@@ -109,20 +136,22 @@ Do you want Organization Logo in the footer?
             
             
             <!-- This is the body of your letter. Put two <br> at the end of each paragraph. -->
-            <body>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras nec nibh nec mi vestibulum facilisis et fringilla sem. Sed semper vitae mauris sit amet tempus. Donec malesuada urna vitae urna hendrerit feugiat. Cras blandit tincidunt risus id venenatis. Maecenas sodales magna tempus lacus placerat euismod. Pellentesque elementum, tellus et consectetur dapibus, nulla nulla eleifend turpis, nec mattis massa elit ac ante. Nullam id neque odio. Nam sagittis et odio vel pretium. In porttitor tristique elementum. Nam a auctor orci. Aliquam auctor ipsum a enim pulvinar fringilla. Etiam hendrerit semper arcu, eu pellentesque leo. Nullam faucibus mauris eget aliquam laoreet. Integer aliquet tristique turpis, id dapibus sem placerat mollis. Sed posuere, felis non consequat vestibulum, nisi dolor ultrices justo, id consequat erat odio in nibh.</p>
+            <div class='letter-body'>
+              
+            <p>
+              
+              {{letter_body}}
+   
 
-<p>Maecenas vitae nisi vulputate nisl finibus tempus id eu lectus. Fusce erat velit, consectetur rutrum ipsum sit amet, vestibulum commodo tortor. Curabitur ac mi lectus. Aliquam enim est, lobortis nec pharetra eget, pretium sit amet nisl. Nulla vehicula tristique convallis. Sed sit amet accumsan justo. Aenean vel dapibus augue. Proin nec nibh ex. In viverra maximus vestibulum. Nam molestie nisi eget aliquam ornare. Nulla tincidunt sem id sollicitudin elementum. Nam pellentesque risus tellus, eget rutrum tortor rhoncus sed. Vivamus pulvinar ligula ac lobortis ullamcorper. Suspendisse dictum in ante ac tincidunt. Quisque placerat elit eros, ut cursus mi consequat tempor. Praesent tincidunt accumsan arcu fermentum sollicitudin.</p>
-
-<p>Morbi ut nulla ut massa consequat viverra. Mauris ex sem, mollis nec pellentesque nec, maximus vitae dui. Etiam ut posuere quam. Phasellus volutpat diam ex, quis consequat dolor placerat dictum. Proin sem neque, facilisis eget sem ut, tincidunt consequat elit. Suspendisse justo libero, ullamcorper sit amet tempor quis, maximus maximus ligula. Praesent molestie tempor ligula non tempor. Morbi aliquam massa quis lorem luctus venenatis. Nulla a risus hendrerit, egestas ex vitae, porttitor risus. Aenean augue massa, varius vitae mollis quis, viverra sit amet purus. Sed accumsan mollis pellentesque. Aliquam eget neque sed erat finibus laoreet ac id dolor. Quisque convallis, libero in bibendum pretium, ligula quam rutrum est, vel dictum dui purus sed felis. Sed in pellentesque ex.</p>
-                
               <!-- This is the code for the footer logo -->
-              {% if org_flogo != 'false' %}
+              <div class='org_flogo'>
+                
+       
           <div class="pull-right">
-         	<img class="org-logo" src="{{ org_logo }}"></div>
-         	{% endif %}
+            <img class="org-logo org-flogo" src="{{ org_logo }}"></div>
+              </div>
               {{signature}}
-            </p></body>
+            </p></div>
           
         </div>
 
@@ -132,5 +161,100 @@ Do you want Organization Logo in the footer?
   </div>
     {% endfor %}
     </div>
-  </body>
+  </div>
+
+<!-- These two script references pull in jQuery and jQueryUI. Both are essential for the edittablilty of the
+    form and the UI of the User Printing Preferences -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script>
+
+      /*
+      METHODOLOGY:
+        This function takes the Preferences provided by the user and adjusts the table accordingly.
+        An if statement is made for each aspect of a person and checks if the user left the box
+        checked or not. If the box was unchecked, then the corresponding table header and columns
+        are removed from the document. If the user unchecks all the boxes, a worning is presented
+        and the page reloads.
+      */
+      function setPrefs(org_name, addr, org_hlogo, org_flogo, letter_body) {
+          $('div#selection').css({
+              "display": "none"
+          });
+          if (org_name == false) {
+              $('.orgName').remove();
+              $('.orgName').each(function() {
+                  $(this).remove();
+              });
+          }
+          if (addr == false) {
+              $('.AddrHead').remove();
+              $('.AddrHead').each(function() {
+                  $(this).remove();
+              });
+          }
+          if (org_hlogo == false) {
+              $('.org_hlogo').remove();
+              $('.org_hlogo').each(function() {
+                  $(this).remove();
+              });
+          }
+        	if (org_flogo == false) {
+        	      $('.org-flogo').remove();
+        	      $('.org-flogo').each(function() {
+        	          $(this).remove();
+        	      });
+        	  }
+       
+        window.alert(letter_body);
+        
+        /*	if (letter_body != "") {
+        	      $('.letter_body').appendChild(letter_body);
+        	      $('.letter_body').each(function() {
+        	          $(this).appendChild(letter_body);
+        	      });
+                
+        	  } */
+      }
+
+      /*
+        METHODOLOGY:
+          The below function runs once the page loads. It sets the dialog checkboxes to checked
+          by default, and creates a Generate button. One the user has finished checking and
+          unchecking, the generate button will close the dialog, pass the checked value
+          of each checkbox to the setPrefs function, and start the setPrefs function.
+      */
+      $(function() {
+          document.getElementById("checkOrgTitle").checked = true;
+          document.getElementById("checkAddr").checked = true;
+          document.getElementById("checkOrgHeaderLogo").checked = true;
+          document.getElementById("checkOrgFooterLogo").checked = true;
+          document.getElementById("letterBody").value = "Put Letter Content Here!";
+          $('#selection').dialog({
+              title: "Printing Preferences",
+              position: {
+                  my: "center top",
+                  at: "center",
+                  of: $('table#reportList thead')
+              },
+              buttons: [{
+                  text: 'Generate',
+                  click: function() {
+                      var org_name = document.getElementById("checkOrgTitle").checked,
+                          addr = document.getElementById("checkAddr").checked,
+                          org_hlogo = document.getElementById("checkOrgHeaderLogo").checked,
+                     			org_flogo = document.getElementById("checkOrgFooterLogo").checked,
+                          letter_body = document.getElementById("letterBody").value;
+                          setPrefs(org_name, addr, org_hlogo, org_flogo, letter_body);
+                          $(this).dialog('close');
+                  }
+              }],
+              "close": function() {
+                  $('div#mainContent').removeClass('blurred');
+              }
+          });
+      });
+
+    </script>
+</body>
 </html>
