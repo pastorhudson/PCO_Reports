@@ -1,5 +1,4 @@
 <!--
-
 How would you like your people sorted? ('first_name', 'last_name')
 {% assign sorted_people = people | sort: 'last_name' %}
 
@@ -18,249 +17,198 @@ Do you want Organization Logo in the header?
 Do you want Organization Logo in the footer?
 {% assign org_flogo = 'true'%}
 {% assign letter_body = "This is the body of the letter." %}
-
-
 -->
-
-
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
-    <link rel="stylesheet" href="https://bootswatch.com/paper/bootstrap.min.css" />
-    <meta charset="utf-8">
-    {{ helpers.bootstrap_3 }}<!-- This report is styled using the Bootstrap framework. http://getbootstrap.com/css/ 
-				 If you'd rather provide your own styles, add them to the style section below. -->
-    
-    
-    
-    <style>
-      @page{margin: 0.5in; size: US-Letter, landscape;}
-      @media print{ div#selection{display:none;} 
-      a{text-decoration:none;color:black;} }
-      body{font-size:14px;}
-      img#logo{float:right;width:auto;height:1in;}
-      tr{font-size:14px;}
-      
-      h3{font-size:1.1em;float:left; display:block; margin:0.25in auto;}
-      .blurred{filter: blur(5px); -webkit-filter: blur(5px); -moz-filter: blur(5px); -o-filter: blur(5px); -ms-filter: blur(5px);}
-
-      .person { page-break-inside: avoid; page-break-after: always;}
-      img.org-logo {height: 70px;}
-    </style>
-  </head>
-  
-  
-  
-  <body>
-    <!--  JQuery turns the following div into a dialog and is used for selecting one's printing prefrences.
-    After the dialog is closed, JQuery sets its display to 'none' via CSS (which prevents the dialog from
-    being visible at print) and un-blurs the report -->
-    <div id="selection">
-        <input type="checkbox" id="checkOrgTitle">Title Header</input>
-        <input type="checkbox" id="checkAddr">Address</input>
-        <input type="checkbox" id="checkOrgHeaderLogo">Header Logo</input><br/>
-				<input type="checkbox" id="checkOrgFooterLogo">Footer Logo</input>
-				<input type="text" id="letterTxt">Body</input>
-    </div>
-    
-<div id=mainContent class="blurred">
-
-  <!-- This is what makes the "Print to PDF" link at the top" 
-  
-<div class="hidden-print">
-      <div class="alert alert-warning hidden-print" role="alert">
-        <a href="https://people.planningcenteronline.com/reports/{{ report.id }}.pdf?list_id={{list.id}}" class="alert-link">Print to PDF</a>
-      </div>    
-    </div> 
--->
-    
-    
-    <!-- This container is what gives your letter margins. -->
-    <div class="media-body">
-      
-      
-      
-      {% for person in sorted_people %}
-      <!-- Everything in the following "person" div gets repeated for each person in your list -->
-      <div class="person">
-       <div class='media-body'>
-         
-         
-       
-         <div class='org_hlogo'>
-        	
-          <div class="pull-right"><br>
-         	<img class="org-logo" src="{{ org_logo }}"></div>
-         
-         </div>
-         
-         <div class='orgName'>
-        	<h2>
-          {{ organization.name }}
-            <br><hr></h2>
-         </div>
-         <br>
-       
-         
-         <!-- This is the Address on the right hand side. -->  
-          <div class="pull-right">
-            
-          <div class="text-right text-muted AddrHead">
-            {% if person.addresses != empty %}
-                          {% for address in person.addresses %}
-                            <address>
-                              {{ address.postal_address }} <!--({{ address.location }})-->
-                            </address>
-                          {% endfor%} 
-            <!-- If there's no address keep the spacing the same on the letter! -->
-            {% else %}
-       		  <br><br><br><br>
-                      {% endif %}
-          </div>
-          
-            
-          
-          <!-- This is the Salutation. -->  
-          <div class="media-body">
-          <h4 class="media-heading">Dear {{ person.name_prefix }}
-                  {{ person.first_name }}
-                  {{ person.middle_name }}
-                  {{ person.last_name }}
-                  {{ person.name_suffix }}Family,
-              <br>
-              <br>
-            </h4> 
-            
-            
-            
-            <!-- This is the body of your letter. Put two <br> at the end of each paragraph. -->
-            <div class='letter-body'>
-              
-            <p>
-              
-              Some Text.
-              </p>
-            </div>
-            
-   
-
-              <!-- This is the code for the footer logo -->
-              <div class='org_flogo'>
-                
-       
-          <div class="pull-right">
-            <img class="org-logo org-flogo" src="{{ org_logo }}"></div>
-              </div>
-              {{signature}}
-            </p></div>
-          
-        </div>
-
-        
-      </div>
-  </div>
-  </div>
-    {% endfor %}
-    </div>
-  </div>
-
-<!-- These two script references pull in jQuery and jQueryUI. Both are essential for the edittablilty of the
-    form and the UI of the User Printing Preferences -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<head>
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css"/>
+		<link rel="stylesheet" href="https://bootswatch.com/paper/bootstrap.min.css"/>
+		<meta charset="utf-8">
+		{{ helpers.bootstrap_3 }}<!-- This report is styled using the Bootstrap framework. http://getbootstrap.com/css/ 
+		If you'd rather provide your own styles, add them to the style section below. -->
+		<style>
+		@page{margin: 0.5in; size: US-Letter, landscape;}
+		@media print{ div#selection{display:none;} 
+		a{text-decoration:none;color:black;} }
+		body{font-size:14px;}
+		img#logo{float:right;width:auto;height:1in;}
+		tr{font-size:14px;}
+		h3{font-size:1.1em;float:left; display:block; margin:0.25in auto;}
+		.blurred{filter: blur(5px); -webkit-filter: blur(5px); -moz-filter: blur(5px); -o-filter: blur(5px); -ms-filter: blur(5px);}
+		.person { page-break-inside: avoid; page-break-after: always;}
+		img.org-logo {height: 70px;}
+		</style>
+	</head>
+	<body>
+		<!--  JQuery turns the following div into a dialog and is used for selecting one's printing prefrences.
+		After the dialog is closed, JQuery sets its display to 'none' via CSS (which prevents the dialog from
+		being visible at print) and un-blurs the report -->
+		<div id="selection">
+			<input type="checkbox" id="checkOrgTitle">Title Header</input>
+			<input type="checkbox" id="checkAddr">Address</input>
+			<input type="checkbox" id="checkOrgHeaderLogo">Header Logo</input><br/>
+			<input type="checkbox" id="checkOrgFooterLogo">Footer Logo</input>
+			<input type="text" id="letterTxt">Body</input>
+		</div>
+		<div id=mainContent class="blurred">
+			<!-- This is what makes the "Print to PDF" link at the top"
+			<div class="hidden-print">
+				<div class="alert alert-warning hidden-print" role="alert">
+					<a href="https://people.planningcenteronline.com/reports/{{ report.id }}.pdf?list_id={{list.id}}" class="alert-link">Print to PDF</a>
+				</div>    
+			</div> 
+			-->
+			<!-- This container is what gives your letter margins. -->
+			<div class="media-body">
+				{% for person in sorted_people %}
+				<!-- Everything in the following "person" div gets repeated for each person in your list -->
+				<div class="person">
+					<div class='media-body'>
+						<div class='org_hlogo'>
+							<div class="pull-right"><br>
+								<img class="org-logo" src="{{ org_logo }}">
+							</div>
+						</div>
+						<div class='orgName'>
+							<h2>
+								{{ organization.name }}
+								<br><hr>
+							</h2>
+						</div>
+						<br>
+						<!-- This is the Address on the right hand side. -->  
+						<div class="pull-right">
+							<div class="text-right text-muted AddrHead">
+								{% if person.addresses != empty %}
+								{% for address in person.addresses %}
+								<address>
+									{{ address.postal_address }} <!--({{ address.location }})-->
+								</address>
+								{% endfor%} 
+								<!-- If there's no address keep the spacing the same on the letter! -->
+								{% else %}
+								<br><br><br><br>
+								{% endif %}
+							</div>
+							<!-- This is the Salutation. -->  
+							<div class="media-body">
+								<h4 class="media-heading">Dear {{ person.name_prefix }}
+									{{ person.first_name }}
+									{{ person.middle_name }}
+									{{ person.last_name }}
+									{{ person.name_suffix }}Family,
+									<br>
+									<br>
+								</h4>
+								<!-- This is the body of your letter. Put two <br> at the end of each paragraph. -->
+								<div class='letter-body'>
+									<p>Some Text.</p>
+								</div>
+								<!-- This is the code for the footer logo -->
+								<div class='org_flogo'>
+									<div class="pull-right">
+										<img class="org-logo org-flogo" src="{{ org_logo }}">
+									</div>
+								</div>
+								{{signature}}
+								<!--</p>-->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+		<!--</div>-->
+		<!-- These two script references pull in jQuery and jQueryUI. Both are essential for the edittablilty of the
+			form and the UI of the User Printing Preferences -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-    <script>
-
-      /*
-      METHODOLOGY:
-        This function takes the Preferences provided by the user and adjusts the table accordingly.
-        An if statement is made for each aspect of a person and checks if the user left the box
-        checked or not. If the box was unchecked, then the corresponding table header and columns
-        are removed from the document. If the user unchecks all the boxes, a worning is presented
-        and the page reloads.
-      */
-      function setPrefs(org_name, addr, org_hlogo, org_flogo, letterTxt) {
-          $('div#selection').css({
-              "display": "none"
-          });
-          if (org_name == false) {
-              $('.orgName').remove();
-              $('.orgName').each(function() {
-                  $(this).remove();
-              });
-          }
-          if (addr == false) {
-              $('.AddrHead').remove();
-              $('.AddrHead').each(function() {
-                  $(this).remove();
-              });
-          }
-          if (org_hlogo == false) {
-              $('.org_hlogo').remove();
-              $('.org_hlogo').each(function() {
-                  $(this).remove();
-              });
-          }
-        	if (org_flogo == false) {
-        	      $('.org-flogo').remove();
-        	      $('.org-flogo').each(function() {
-        	          $(this).remove();
-        	      });
-        	  }
-       
-        	if (letterTxt) {
-        	      window.alert(letterTxt);
-                
-        	  }
-        
-        /*	if (letter_body != "") {
-        	      $('.letter_body').appendChild(letterTxt);
-        	      $('.letter_body').each(function() {
-        	          $(this).appendChild(letterTxt);
-        	      });
-                
-        	  } */
-      }
-
-      /*
-        METHODOLOGY:
-          The below function runs once the page loads. It sets the dialog checkboxes to checked
-          by default, and creates a Generate button. One the user has finished checking and
-          unchecking, the generate button will close the dialog, pass the checked value
-          of each checkbox to the setPrefs function, and start the setPrefs function.
-      */
-      $(function() {
-          document.getElementById("checkOrgTitle").checked = true;
-          document.getElementById("checkAddr").checked = true;
-          document.getElementById("checkOrgHeaderLogo").checked = true;
-          document.getElementById("checkOrgFooterLogo").checked = true;
-          document.getElementById("letterTxt").value = "Put Letter Content Here!";
-          $('#selection').dialog({
-              title: "Printing Preferences",
-              position: {
-                  my: "center top",
-                  at: "center",
-                  of: $('table#reportList thead')
-              },
-              buttons: [{
-                  text: 'Generate',
-                  click: function() {
-                      var org_name = document.getElementById("checkOrgTitle").checked,
-                          addr = document.getElementById("checkAddr").checked,
-                          org_hlogo = document.getElementById("checkOrgHeaderLogo").checked,
-                     			org_flogo = document.getElementById("checkOrgFooterLogo").checked,
-                          letterTxt = document.getElementById("letterTxt").value;
-                          setPrefs(org_name, addr, org_hlogo, org_flogo, letterTxt);
-                          $(this).dialog('close');
-                  }
-              }],
-              "close": function() {
-                  $('div#mainContent').removeClass('blurred');
-              }
-          });
-      });
-
-    </script>
-</body>
+		<script>
+			/*
+				METHODOLOGY:
+					This function takes the Preferences provided by the user and adjusts the table accordingly.
+					An if statement is made for each aspect of a person and checks if the user left the box
+					checked or not. If the box was unchecked, then the corresponding table header and columns
+					are removed from the document. If the user unchecks all the boxes, a worning is presented
+					and the page reloads.
+			*/
+			function setPrefs(org_name, addr, org_hlogo, org_flogo, letterTxt)
+			{
+				$('div#selection').css({
+					"display": "none"
+				});
+				if (org_name == false)
+				{
+					$('.orgName').remove();
+					$('.orgName').each(function() {
+						$(this).remove();
+					});
+				}
+				if (addr == false)
+				{
+					$('.AddrHead').remove();
+					$('.AddrHead').each(function() {
+						$(this).remove();
+					});
+				}
+				if (org_hlogo == false)
+				{
+					$('.org_hlogo').remove();
+					$('.org_hlogo').each(function() {
+						$(this).remove();
+					});
+				}
+				if (org_flogo == false)
+				{
+					$('.org-flogo').remove();
+					$('.org-flogo').each(function() {
+						$(this).remove();
+					});
+				}
+				if (letterTxt)
+				{
+					window.alert(letterTxt);
+				}
+				/*if (letter_body != "")
+				{
+					$('.letter_body').appendChild(letterTxt);
+					$('.letter_body').each(function() {
+					$(this).appendChild(letterTxt);
+					});
+				} */
+			}
+			/*
+				METHODOLOGY:
+					The below function runs once the page loads. It sets the dialog checkboxes to checked
+					by default, and creates a Generate button. One the user has finished checking and
+					unchecking, the generate button will close the dialog, pass the checked value
+					of each checkbox to the setPrefs function, and start the setPrefs function.
+			*/
+			$(function()
+			{
+				document.getElementById("checkOrgTitle").checked = true;
+				document.getElementById("checkAddr").checked = true;
+				document.getElementById("checkOrgHeaderLogo").checked = true;
+				document.getElementById("checkOrgFooterLogo").checked = true;
+				document.getElementById("letterTxt").value = "Put Letter Content Here!";
+				$('#selection').dialog({
+					title: "Printing Preferences",
+					position: {
+						my: "center top",
+						at: "center",
+						of: $('table#reportList thead')
+					},
+					buttons: [{
+						text: 'Generate',
+						click: function() {
+						}
+					}],
+					"close": function() {
+						$('div#mainContent').removeClass('blurred');
+					}
+				});
+			});
+		</script>
+	</body>
 </html>
