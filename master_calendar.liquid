@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ report.title }}</title>
+    <link rel="stylesheet" type="text/css" media="all" href="{{ report.stylesheet_href }}">
+    <style>
+        .level-1 {
+            width: 14%;
+            display: inline-block;
+            text-align: center;
+            height:100%;
+            vertical-align: top;
+            border: 2px solid black;
+            overflow: hidden;
+        }
+
+        .header-large {
+            font-size: 120%;
+        }
+
+        .level-2, .level-3, .level-4, .level-5 {
+            padding-left: 0px;
+        }
+
+        .times {
+            font-size: 11px;
+            margin: 0px;
+        }
+
+        .gutter-bottom-medium {
+            margin-bottom: 0px;
+        }
+
+        .gutter-bottom-large {
+            margin-bottom: .5em
+        }
+
+        .gutter-top-medium {
+            margin-top: 0px;
+        }
+
+        .gutter-bottom-small {
+            margin: 0px
+        }
+
+        .block {
+            border-left: none;
+            margin-left: 0px;
+            text-align: left;
+            padding-left: 2px;
+            display: inline-block;
+        }
+
+        .level-1 h2 {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .level-1 ul {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<div class="report-wrapper">
+    {% comment %}<h1 class="header-large txt-center gutter-bottom-large">{{ report.scope }}: {{ report.start_date }}{% endcomment %}
+        {% comment %}through {{ report.end_date }}</h1>{% endcomment %}
+
+    {% if report.org_twenty_four_hour_time? %}
+        {% assign time_format = "%H:%M" %}
+        {% assign time_format_short = "%H" %}
+    {% else %}
+        {% assign time_format = "%-I%M%P" %}
+        {% assign time_format_short = "%-I%P" %}
+    {% endif %}
+
+    {% if report.org_day_month_dates? %}
+        {% assign date_format = "%d/%m/%Y" %}
+    {% else %}
+        {% assign date_format = "%m/%d/%Y" %}
+    {% endif %}
+
+    {% capture first_dayname %}{{ days[0].date | date: '%A' }}{% endcapture %}
+
+    {% if first_dayname == 'Sunday' %}
+    {% elsif first_dayname == 'Monday' %}
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Sunday</h2>
+        </div>
+    {% elsif first_dayname == 'Tuesday' %}
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Sunday</h2>
+        </div>
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Monday</h2>
+        </div>
+    {% elsif first_dayname == 'Wednesday' %}
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Sunday</h2>
+        </div>
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Monday</h2>
+        </div>
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Tuesday</h2>
+        </div>
+
+    {% elsif first_dayname == 'Thursday' %}
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Sunday</h2>
+        </div>
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Monday</h2>
+        </div>
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Tuesday</h2>
+        </div>
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Wednesday</h2>
+        </div>
+    {% elsif first_dayname == 'Friday' %}
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Sunday</h2>
+        </div>
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Monday</h2>
+        </div>
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Tuesday</h2>
+        </div>
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Wednesday</h2>
+        </div>
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Thursday</h2>
+        </div>
+    {% elsif first_dayname == 'Saturday' %}
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Sunday</h2>
+        </div>
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Monday</h2>
+        </div>
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Tuesday</h2>
+        </div>
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Wednesday</h2>
+        </div>
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Thursday</h2>
+        </div>
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">Friday</h2>
+        </div>
+    {% endif %}
+
+    {% for day in days %}
+        {% capture day_name %}{{ day.date | date: '%A, %B %-d, %Y' }}{% endcapture %}
+        <div class="level-1">
+            <h2 class="date date-header header-large gutter-bottom-small">{{ day_name }}</h2>
+
+            {% if day.instances.size == 0 %}
+                <div class="soft pad-left gutter-bottom-medium">
+                    No events today
+                </div>
+            {% endif %}
+
+            {% if day.instances.size != 0 %}
+                <ul>
+                    {% for instance in day.instances %}
+                        {% capture minute_value %} {{ instance.starts_at | date: '%M' }} {% endcapture %}
+                        {% assign minute_value = minute_value | plus: 0 %}
+                        <li class="day gutter-bottom-medium gutter-top-medium level-2 block">
+                            {% capture starts_at_day_name %}{{ instance.starts_at | date: '%A, %B %-d, %Y' }}{% endcapture %}
+                            {% capture ends_at_day_name %}{{ instance.ends_at | date: '%A, %B %-d, %Y' }}{% endcapture %}
+                            <h3 class="times header-medium gutter-bottom-small">
+                                {% if instance.reservation.all_day_event? %}
+                                    All-day
+                                {% elsif starts_at_day_name == day_name %}
+                                    {% if ends_at_day_name == day_name %}
+                                        {% if minute_value == 0 %}
+                                            {{ instance.starts_at | date: time_format_short | downcase }} - {{ instance.ends_at | date: time_format_short | downcase }}
+                                        {% else %}
+                                            {{ instance.starts_at | date: time_format | downcase }} - {{ instance.ends_at | date: time_format | downcase }}
+
+                                        {% endif %}
+                                    {% else %}
+                                        {% if minute_value == 0 %}
+                                            Today, {{ instance.starts_at | date: time_format_short | downcase }} - {{ instance.ends_at | date: time_format_short | downcase }}
+                                        {% else %}
+                                            Today, {{ instance.starts_at | date: time_format | downcase }} - {{ instance.ends_at | date: time_format | downcase }}
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                    {% if ends_at_day_name == day_name %}
+                                        {% if minute_value == 0 %}
+                                            {{ instance.starts_at | date: time_format_short | downcase }} - {{ instance.ends_at | date: time_format_short | downcase }}
+
+                                        {% else %}
+                                            {{ instance.starts_at | date: time_format | downcase }}
+                                        {% endif %}
+                                    {% else %}
+                                        {% if minute_value == 0 %}
+                                            {{ instance.starts_at | date: time_format_short | downcase }} - {{ instance.ends_at | date: time_format_short | downcase }}
+
+                                        {% else %}
+                                            {{ instance.starts_at | date: time_format | downcase }} - {{ instance.ends_at | date: time_format | downcase }}
+
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                                {% if instance.event.name != 0 %}
+                                    <span class="{{ instance.approval_status }} " style="font-weight:normal;">
+												{% capture event_name %}{{ instance.event.name | truncate: 11, "" }}{% endcapture %}
+                                        {{ event_name }}</span>
+
+                                    {% for request in instance.reservation.simple_room_requests %}
+                                        <span class="text-muted" style="font-weight:normal;">
+											{{ request.room.name }}, </span>
+                                    {% endfor %}
+                                {% endif %}
+                            </h3>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+</body>
+</html>

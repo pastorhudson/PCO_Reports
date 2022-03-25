@@ -1,0 +1,363 @@
+<!-- Report Configuration ========================== -->
+
+{% comment %}You need two questions on each room for this report to work properly. One question for Lockup/Lock,{% endcomment %}
+{% comment %}and one question for Room Setup. Set the exact text of those questions below.{% endcomment %}
+{% assign lockup_question = "Room Unlock + Relock Needed" %}
+{% assign setup_question = "Room Setup Needed" %}
+
+{% comment %}This setting determins if each event should be on it's own page or if you just want all events to print in as little space as possible.{% endcomment %}
+{% assign new_page_per_event = true %}
+<!-- @end Report Configuration ========================== -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ report.organization_name }} Facility Sheet</title>
+    <link rel="stylesheet" type="text/css" media="all" href="{{ report.stylesheet_href }}">
+    <style>
+        #logo {
+            float: right;
+            width: 100px;
+            height: auto;
+        }
+
+        #report-title {
+            float: right;
+        }
+
+        #org-name {
+            float: left;
+        }
+    </style>
+</head>
+<body>
+<div class="report-wrapper">
+
+
+    {% if report.org_twenty_four_hour_time? %}
+        {% assign time_format = "%H:%M" %}
+    {% else %}
+        {% assign time_format = "%-I:%M%P" %}
+    {% endif %}
+
+    {% if report.org_day_month_dates? %}
+        {% assign date_format = "%d/%m/%Y" %}
+    {% else %}
+        {% assign date_format = "%m/%d/%Y" %}
+    {% endif %}
+
+    {% for day in days %}
+        {% capture day_name %}{{ day.date | date: '%A, %B %-d, %Y' }}{% endcapture %}
+
+
+
+        {% if day.instances.size != 0 %}
+            {% assign multiple_events = false %}
+            {% if day.instances.size > 1 %}
+                {% assign multiple_events = true %}
+            {% endif %}
+            {% for instance in day.instances %}
+                {% if instance.reservation.room_requests.size > 0 %}
+                    {% assign room_setup_needed = false %}
+                    {% assign room_lock_needed = false %}
+                    {% for request in instance.reservation.complex_room_requests %}
+
+                        {% if request.answers.size > 0 %}
+
+                            {% for answer in request.answers %}
+                                {% if answer.question == setup_question and answer.answer == "Yes" %}
+                                    {% assign room_setup_needed = true %}
+                                {% endif %}
+                                {% if answer.question == lock_question and answer.answer == "Yes" %}
+                                    {% assign room_lock_needed = true %}
+                                {% endif %}
+                            {% endfor %}
+
+
+                        {% endif %}
+                    {% endfor %}
+                    {% if room_setup_needed or room_lock_needed %}
+                        <div class="level-1">
+                            <h3 id="report-title">Facilities Team - Setup Sheet</h3><br>
+                            <img src="{{ report.organization_logo_url }}" width="100" id="logo"><br>
+                            <div class="level-2 block">
+                                <h2>{{ day_name }}</h2>
+                                <ul>
+                                    <li class="gutter-bottom-large gutter-top-medium">
+                                        {% capture starts_at_day_name %}{{ instance.starts_at | date: '%A, %B %-d, %Y' }}{% endcapture %}
+                                        {% capture ends_at_day_name %}{{ instance.ends_at | date: '%A, %B %-d, %Y' }}{% endcapture %}
+
+                                        <!-- ===== Date Heading ========================== -->
+                                        <h3 class="header-medium gutter-bottom-small">
+                                            {% if instance.reservation.all_day_event? %}
+                                                All-day
+                                            {% elsif starts_at_day_name == day_name %}
+                                                {% if ends_at_day_name == day_name %}
+                                                    {{ instance.starts_at | date: time_format | downcase }} - {{ instance.ends_at | date: time_format | downcase }}
+                                                {% else %}
+                                                    Today, {{ instance.starts_at | date: time_format | downcase }} - {{ instance.ends_at | date: date_format }} ({{ instance.ends_at | date: time_format | downcase }})
+                                                {% endif %}
+                                            {% else %}
+                                                {% if ends_at_day_name == day_name %}
+                                                    {{ instance.starts_at | date: date_format }} ({{ instance.starts_at | date: time_format | downcase }}) - Today, {{ instance.ends_at | date: time_format | downcase }}
+                                                {% else %}
+                                                    {{ instance.starts_at | date: date_format }} ({{ instance.starts_at | date: time_format | downcase }}) - {{ instance.ends_at | date: date_format }} ({{ instance.ends_at | date: time_format | downcase }})
+                                                {% endif %}
+                                            {% endif %}
+
+                                            {% if instance.event.name != 0 %}
+                                                {{ instance.event.name }} <span
+                                                    class="status {{ instance.event.approval_status }}">{{ instance.event.approval_status }}</span>
+                                            {% endif %}
+                                        </h3>
+                                        <!-- @end Date Heading ========================== -->
+
+                                        <!-- ===== Day Meta Info ========================== -->
+                                        <ul class="container-naked gutter-bottom-medium">
+                                            {% if instance.event.name != blank %}
+                                                {% if instance.event.owner %}
+                                                    <li>
+                                                        <strong>Owner:</strong> {{ instance.event.owner.name }}
+                                                    </li>
+                                                {% endif %}
+
+                                                {% if instance.event.notes != blank %}
+                                                    <li><strong>Notes:</strong></li>
+                                                    <li style="white-space: pre-wrap;">{{ instance.event.notes }}</li>
+                                                {% endif %}
+
+                                                {% if instance.event.summary != blank %}
+                                                    <li><strong>Summary:</strong></li>
+                                                    <li style="white-space: pre-wrap;">
+                                                        <em>{{ instance.event.summary }}</em></li>
+                                                {% endif %}
+                                            {% endif %}
+
+                                            {% if instance.reservation.location != blank %}
+                                                <li>
+                                                    <strong>Location:</strong> {{ instance.reservation.location }}
+                                                </li>
+                                            {% endif %}
+                                        </ul>
+                                        <!-- @end Day Meta Info ========================== -->
+
+
+                                        <!-- ===== Event Schedule ========================== -->
+                                        {% unless instance.reservation.all_day_event? %}
+                                            <div class="level-3">
+                                                <h3 class="bg-soft header-medium gutter-bottom-small">
+                                                    Event Schedule</h3>
+                                                {% if instance.event_times.size > 0 %}
+                                                    <ul>
+                                                        {% for event_time in instance.event_times %}
+                                                            <li class="divider-soft pad-left item">
+                                                                <strong>{{ event_time.starts_at | date: time_format | downcase }}
+                                                                    -{{ event_time.ends_at | date: time_format | downcase }}
+                                                                    :</strong> {{ event_time.name }}
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                {% else %}
+                                                    <p class="pad-left soft">(No event times
+                                                        defined.)</p>
+                                                {% endif %}
+                                            </div>
+                                        {% endunless %}
+                                        <!-- @end Event Schedule ========================== -->
+
+                                        <!-- ===== Event Rooms ========================== -->
+
+                                        <div class="level-3">
+                                            <h3 class="bg-soft header-medium gutter-bottom-small">
+                                                Rooms</h3>
+                                            <ul>
+                                                {% for request in instance.reservation.simple_room_requests %}
+                                                    <li class="gutter-bottom-small pad-left item item--inline">
+                                                        <div class="gutter-bottom-small">
+                                                            <span class="header-small txt-underline item-title">{{ request.room.name }}</span>&nbsp;
+                                                            <span class="status {{ request.approval_status }}">{{ request.approval_status }}</span>
+                                                        </div>
+                                                    </li>
+                                                {% endfor %}
+
+                                                {% for request in instance.reservation.complex_room_requests %}
+                                                    <li class="gutter-bottom-small pad-left item">
+                                                        <div class="gutter-bottom-small">
+                                                            <span class="header-small txt-underline item-title">{{ request.room.name }}</span>&nbsp;
+                                                            <span class="status {{ request.approval_status }}">{{ request.approval_status }}</span>
+                                                        </div>
+
+                                                        <div class="level-3">
+                                                            {% if request.room_setup %}
+                                                                <div>
+                                                                    <strong>Setup:</strong> {{ request.room_setup.name }}
+                                                                    {% if request.room_setup.description != blank %}
+                                                                        &mdash; {{ request.room_setup.description }}
+                                                                    {% endif %}
+                                                                </div>
+                                                            {% endif %}
+
+                                                            {% if request.answers.size > 0 %}
+                                                                {% assign no_answer = false %}
+                                                                {% for answer in request.answers %}
+                                                                    {% if answer.section_header? %}
+                                                                        {% if no_answer %}
+                                                                            <p class="question-description">None</p>
+                                                                        {% endif %}
+                                                                        <div>
+                                                                            <strong>{{ answer.label }}:</strong>
+                                                                            <p class="question-description">{{ answer.description }}</p>
+                                                                        </div>
+                                                                        {% assign no_answer = true %}
+                                                                    {% else %}
+                                                                        {% unless answer.answer == "No" or answer.answer == "(Unanswered)" %}
+                                                                            <div class="divider-soft">
+                                                                                <strong>{{ answer.question }}</strong>
+                                                                                &mdash; {{ answer.answer }}
+                                                                            </div>
+                                                                            {% assign no_answer = false %}
+                                                                        {% endunless %}
+
+                                                                    {% endif %}
+
+                                                                {% endfor %}
+
+                                                            {% endif %}
+
+                                                            {% if request.notes != blank %}
+                                                                <div>
+                                                                    <strong>Additional
+                                                                        notes:</strong> {{ request.notes }}
+                                                                </div>
+                                                            {% endif %}
+
+                                                            <!-- ===== Resources for Rooms ========================== -->
+                                                            {% if request.resource_requests.size > 0 %}
+                                                                <h4 class="bg-soft header-medium gutter-bottom-small">
+                                                                    Resources for this room</h4>
+                                                                <div class="level-4">
+                                                                    <ul>
+                                                                        {% for resource_request in request.simple_resource_requests %}
+                                                                            <li class="sub-item sub-item--inline gutter-bottom-small">
+                                                                                <h4 class="header-small">
+                                                                                    <span class="txt-underline sub-item-title">{% if resource_request.quantity > 1 %}{{ resource_request.quantity }} {% endif %} {{ resource_request.resource.name }}</span>
+                                                                                    <span class="status {{ resource_request.approval_status }}">{{ resource_request.approval_status }}</span>
+                                                                                </h4>
+                                                                            </li>
+                                                                        {% endfor %}
+
+                                                                        {% for resource_request in request.complex_resource_requests %}
+                                                                        <li class="sub-item">
+                                                                            <h4 class="header-small">
+                                                                                <span class="txt-underline sub-item-title">{% if resource_request.quantity > 1 %}{{ resource_request.quantity }} {% endif %} {{ resource_request.resource.name }}</span>
+                                                                                <span class="status {{ resource_request.approval_status }}">{{ resource_request.approval_status }}</span>
+                                                                            </h4>
+
+                                                                            {% if resource_request.notes != blank %}
+                                                                                <div>
+                                                                                    <strong>Additional
+                                                                                        notes:</strong> {{ resource_request.notes }}
+                                                                                </div>
+                                                                            {% endif %}
+
+                                                                            {% if resource_request.answers.size > 0 %}
+                                                                                <ul class="gutter-bottom-medium gutter-top-small pad-left">
+                                                                                    {% for answer in resource_request.answers %}
+                                                                                        {% if answer.section_header? %}
+                                                                                            <li>
+                                                                                                <strong>{{ answer.label }}</strong>
+                                                                                            </li>
+                                                                                            <p class="question-description">{{ answer.description }}</p>
+                                                                                        {% else %}
+                                                                                            <li class="divider-soft">
+                                                                                                <strong>{{ answer.question }}</strong>
+                                                                                                &mdash; {{ answer.answer }}
+                                                                                                <p class="question-description">{{ answer.description }}</p>
+                                                                                            </li>
+                                                                                        {% endif %}
+                                                                                    {% endfor %}
+                                                                                </ul>
+                                                                            {% endif %}
+                                                                            {% endfor %}
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            {% endif %}
+                                                            <!-- @end Resources for Rooms ========================== -->
+                                                        </div>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+
+                                        <!-- @end Event Rooms ========================== -->
+
+                                        <!-- ===== Event Resources ========================== -->
+                                        {% if instance.reservation.resource_requests.size > 0 %}
+                                            <div class="level-3">
+                                                <h3 class="txt-left bg-soft header-medium gutter-bottom-small">
+                                                    Resources</h3>
+                                                <ul>
+                                                    {% for request in instance.reservation.simple_resource_requests %}
+                                                        <li class="gutter-bottom-small pad-left item item--inline">
+                                                            <span class="header-small txt-underline">{{ request.quantity }} {{ request.room.name }}</span>&nbsp;
+                                                            <span class="status {{ request.approval_status }}">{{ request.approval_status }}</span>
+                                                        </li>
+                                                    {% endfor %}
+
+                                                    {% for request in instance.reservation.complex_resource_requests %}
+                                                        <li class="gutter-bottom-small pad-left item">
+                                                            <span class="header-small txt-underline">{{ request.quantity }} {{ request.room.name }}</span>&nbsp;
+                                                            <span class="status {{ request.approval_status }}">{{ request.approval_status }}</span>
+
+                                                            {% if request.notes != blank %}
+                                                                <div>
+                                                                    <strong>Additional
+                                                                        notes:</strong> {{ request.notes }}
+                                                                </div>
+                                                            {% endif %}
+
+                                                            <div class="gutter-bottom-small level-3">
+
+                                                                {% for answer in request.answers %}
+                                                                    {% if answer.section_header? %}
+                                                                        <strong>{{ answer.label }}</strong>
+                                                                        <br/>
+                                                                        <p class="question-description">{{ answer.description }}</p>
+                                                                    {% else %}
+                                                                        <div class="divider-soft">
+                                                                            <strong>{{ answer.question }}
+                                                                                :</strong>
+                                                                            &mdash; {{ answer.answer }}
+                                                                            <p class="question-description">{{ answer.description }}</p>
+                                                                        </div>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        {% endif %}
+                                        <!-- @end Event Resources ========================== -->
+
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        {% if multiple_events and new_page_per_event %}
+                            <p style="page-break-before: always;">&nbsp;</p>
+                        {% endif %}
+                    {% else %}
+                    {% endif %}
+
+                {% endif %}
+
+            {% endfor %}
+        {% endif %}
+
+    {% endfor %}
+</div>
+</body>
+</html>
