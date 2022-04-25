@@ -45,69 +45,6 @@
             padding-top: 15px;
         }
 
-        @property --p {
-            syntax: '<number>';
-            inherits: true;
-            initial-value: 0;
-        }
-
-        .pie {
-            --p: 20;
-            --b: 18px;
-            --c: darkred;
-            --w: 130px;
-
-            width: var(--w);
-            aspect-ratio: 1;
-            position: relative;
-            display: inline-grid;
-            margin: 5px;
-            place-content: center;
-            font-size: 25px;
-            font-weight: bold;
-            font-family: sans-serif;
-        }
-
-        .pie:before,
-        .pie:after {
-            content: "";
-            position: absolute;
-            border-radius: 50%;
-        }
-
-        .pie:before {
-            inset: 0;
-            background: radial-gradient(farthest-side, var(--c) 98%, #0000) top/var(--b) var(--b) no-repeat,
-            conic-gradient(var(--c) calc(var(--p) * 1%), #0000 0);
-            -webkit-mask: radial-gradient(farthest-side, #0000 calc(99% - var(--b)), #000 calc(100% - var(--b)));
-            mask: radial-gradient(farthest-side, #0000 calc(99% - var(--b)), #000 calc(100% - var(--b)));
-        }
-
-        .pie:after {
-            inset: calc(50% - var(--b) / 2);
-            background: var(--c);
-            transform: rotate(calc(var(--p) * 3.6deg)) translateY(calc(50% - var(--w) / 2));
-        }
-
-        .animate {
-            animation: p 1s .5s both;
-        }
-
-        .no-round:before {
-            background-size: 0 0, auto;
-        }
-
-        .no-round:after {
-            content: none;
-        }
-
-        @keyframes p {
-            from {
-                --p: 0
-            }
-        }
-
-
     </style>
 </head>
 <body>
@@ -136,18 +73,17 @@
     {% for result in results %}
         {% assign volunteer = false %}
         {% if result.person.membership == member_status %}
-            {% comment %}{{ result.person.status }}{% endcomment %}
             {% assign member_number = member_number | plus: 1 %}
         {% endif %}
-        {% for item in result.person.custom_tabs.covenant_class_fields %}
-            {{ item }}
-            {% endfor %}
+
+        {% assign volunteering_len = result.person.custom_tabs.serving.fields | size %}
+
+        {% if volunteering_len > 0 %}
+            {% assign volunteer_number = volunteer_number | plus: 1 %}
+        {% endif %}
+
 
     {% endfor %}
-
-    Member Number: {{ member_number }}
-    {% assign member_percent = member_number | times: 100.0 | divided_by: people.size | round: 2 %}
-    Member Percent: {{ member_percent }}
 
     <!-- Calculate Serving Percent -->
 
@@ -156,26 +92,9 @@
         <tr>
             <th class="text-center"><h2>Class Size:</h2></th>
             <th class="text-center"><h2>Retention: {{ member_number }}</h2></th>
-            <th class="text-center"><h2>Volunteering:</h2></th>
+            <th class="text-center"><h2>Volunteering: {{ volunteer_number }}</h2></th>
         </tr>
         </thead>
-
-
-        <!-- Assign Colors based on percentages -->
-        {% if member_percent < 20 %}
-            {% assign member_color = "red" %}
-        {% elsif member_percent < 50 %}
-            {% assign member_color = "orange" %}
-        {% elsif member_percent < 100 %}
-            {% assign member_color = "green" %}
-        {% endif %}
-        {% if serving_percent < 20 %}
-            {% assign serving_color = "red" %}
-        {% elsif serving_percent < 50 %}
-            {% assign serving_color = "orange" %}
-        {% elsif serving_percent < 100 %}
-            {% assign serving_color = "green" %}
-        {% endif %}
 
         <!-- Display Pie -->
         <tbody>
@@ -184,9 +103,6 @@
                 <h1>{{ people.size }}</h1>
             </td>
             <td class="text-center">
-                {% comment %}<div class="pie animate no-round"{% endcomment %}
-                     {% comment %}style="--p:{{ member_percent }};--c:{{ member_color }};"> {{ member_percent }}%{% endcomment %}
-                {% comment %}</div>{% endcomment %}
                 <img width="300" src="https://quickchart.io/chart?c={
   type: 'doughnut',
   data: {
@@ -217,12 +133,12 @@
             </td>
             <td class="text-center">
                 {% comment %}<div class="pie animate no-round" style="--p:20;--c:{{ serving_color }};"> 20%</div>{% endcomment %}
-                                <img width="300" src="https://quickchart.io/chart?c={
+                <img width="300" src="https://quickchart.io/chart?c={
   type: 'doughnut',
   data: {
     datasets: [
       {
-        data: [{{ people.size | minus: member_number }},{{ member_number }}],
+        data: [{{ people.size | minus: volunteer_number }},{{ volunteer_number }}],
         backgroundColor: [
           'rgb(75, 192, 192)',
           'rgb(50,205,50)',
@@ -232,7 +148,7 @@
         label: 'Dataset 1',
       },
     ],
-    labels: ['Retention', 'Non Retention'],
+    labels: ['Volunteer', 'Non Volunteer'],
   },
   options: {
     title: {
@@ -264,8 +180,9 @@
                     <img class="avatar" src="{{ result.person.photo_url }}"/>
                 <td>{{ result.person.name }}</td>
                 <td>{{ result.person.membership }}</td>
-                <td>Media: Leader, Worship: Volunteer, Lacrosse Club: Goalie, Taco Squad: Cheeser,
-                    Pickle Brine Committee: Cucumber Selector
+                <td>{% for item in result.person.custom_tabs.serving.fields %}
+                        {{ item.name }}: {{ item.value }}
+                    {% endfor %}
                 </td>
             </tr>
         {% endfor %}
