@@ -17,8 +17,9 @@
         /*-- PDF margin reset --*/
 
         tr.person > td {
-            padding: 0.25em;
+            padding: 0.5em;
         }
+
 
         tr:nth-child(even) {
             background-color: #edf2f7 !important;
@@ -42,7 +43,7 @@
 
         .container {
             width: 100%;
-            padding-top: 15px;
+            padding-top: 0px;
         }
 
     </style>
@@ -62,14 +63,11 @@
             {{ organization.name }}
         </small>
     </h2>
-    <div class="clearfix"></div>
-
     {% assign member_percent = 60 %}
     {% assign serving_percent = 30 %}
     <!-- Calculate Member Percent -->
     {% assign member_number = 0 | plus: 0 %}
     {% assign volunteer_number = 0 | plus: 0 %}
-
     {% for result in results %}
         {% assign volunteer = false %}
         {% if result.person.membership == member_status %}
@@ -81,27 +79,30 @@
         {% if volunteering_len > 0 %}
             {% assign volunteer_number = volunteer_number | plus: 1 %}
         {% endif %}
-
-
     {% endfor %}
 
-    <!-- Calculate Serving Percent -->
-
-    <table class="table-bordered" style="width: 100%">
+    <!-- Calculate Retention Percent -->
+    {% assign retention_percent = member_number | times: 100.0 | divided_by: people.size | round: 2 %}
+    <!-- Calculate Volunteer Percent -->
+    {% assign volunteer_percent = volunteer_number | times: 100.0 | divided_by: people.size | round: 2 %}
+    <table class="table mt-0" style="width: 100%">
         <thead>
         <tr>
-            <th class="text-center"><h2>Class Size:</h2></th>
-            <th class="text-center"><h2>Retention: {{ member_number }}</h2></th>
-            <th class="text-center"><h2>Volunteering: {{ volunteer_number }}</h2></th>
+            <th class="text-center" colspan="2"><h2>Class Size: {{ people.size }}</h2></th>
+        </tr>
+        </thead>
+        <thead>
+
+        <tr>
+            <th class="text-center"><h2>{{ retention_percent }}% Retention: {{ member_number }}</h2></th>
+            <th class="text-center"><h2>{{ volunteer_percent }}% Volunteering: {{ volunteer_number }}</h2></th>
         </tr>
         </thead>
 
         <!-- Display Pie -->
         <tbody>
         <tr>
-            <td class="text-center">
-                <h1>{{ people.size }}</h1>
-            </td>
+
             <td class="text-center">
                 <img width="300" src="https://quickchart.io/chart?c={
   type: 'doughnut',
@@ -110,22 +111,31 @@
       {
         data: [{{ people.size | minus: member_number }},{{ member_number }}],
         backgroundColor: [
-          'rgb(75, 192, 192)',
-          'rgb(50,205,50)',
+          'rgb(255, 159, 64)',
           'rgb(75, 192, 192)',
         ],
 
         label: 'Dataset 1',
       },
     ],
-    labels: ['Retention', 'Non Retention'],
+    labels: ['Non Retention', 'Retention'],
   },
   options: {
     title: {
       display: false,
       text: 'Member Status',
-
     },
+	  plugins: {
+    datalabels: {
+    display: true,
+    borderRadius: 4,
+    font: {
+          size: 22,
+          weight: 'bold'
+        },
+    backgroundColor: 'white',
+      }
+    }
   },
 }
 "/>
@@ -140,22 +150,31 @@
       {
         data: [{{ people.size | minus: volunteer_number }},{{ volunteer_number }}],
         backgroundColor: [
-          'rgb(75, 192, 192)',
-          'rgb(50,205,50)',
+          'rgb(255, 159, 64)',
           'rgb(75, 192, 192)',
         ],
 
         label: 'Dataset 1',
       },
     ],
-    labels: ['Volunteer', 'Non Volunteer'],
+    labels: ['Non Volunteer', 'Volunteer'],
   },
   options: {
     title: {
       display: false,
       text: 'Member Status',
-
     },
+    plugins: {
+    datalabels: {
+    display: true,
+    borderRadius: 4,
+    font: {
+          size: 22,
+          weight: 'bold'
+        },
+    backgroundColor: 'white',
+     }
+    }
   },
 }
 "/>
@@ -171,6 +190,7 @@
             <th style="text-align: left">Name</th>
             <th style="text-align: left">Status</th>
             <th style="text-align: left">Area Of Service</th>
+            <th style="text-align: left">Top Three</th>
         </tr>
         </thead>
         <tbody>
@@ -179,11 +199,18 @@
                 <td>
                     <img class="avatar" src="{{ result.person.photo_url }}"/>
                 <td>{{ result.person.name }}</td>
-                <td>{{ result.person.membership }}</td>
+              <td class="mr-3">{{ result.person.membership }}</td>
                 <td>{% for item in result.person.custom_tabs.serving.fields %}
-                        {{ item.name }}: {{ item.value }}
+                        {{ item.name }}: {{ item.value }},
                     {% endfor %}
                 </td>
+                <td>{% for item in result.person.custom_tabs.spiritual_gifts.fields %}
+                        {% if item.name == "Top Three" %}
+                        {{ item.value }}
+                    {% endif %}
+                    {% endfor %}
+                </td>
+
             </tr>
         {% endfor %}
 
