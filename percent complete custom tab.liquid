@@ -37,49 +37,49 @@
 
     <!-- Count data totals -->
     {% for result in results %}
-            {% for f in result.person.custom_tabs.growth_track.fields %}
-                {% if f.name == "Step 1 - Become a Member" %}
-                    {% assign step_1_-_become_a_member_count = step_1_-_become_a_member_count | plus: 1 %}
-                {% elsif f.name == "Step 1: Become a Member (On Demand)" %}
-                    {% assign step_1_become_a_member_on_demand_count = step_1_become_a_member_on_demand_count | plus: 1 %}
+        {% for f in result.person.custom_tabs.growth_track.fields %}
+            {% if f.name == "Step 1 - Become a Member" %}
+                {% assign step_1_-_become_a_member_count = step_1_-_become_a_member_count | plus: 1 %}
+            {% elsif f.name == "Step 1: Become a Member (On Demand)" %}
+                {% assign step_1_become_a_member_on_demand_count = step_1_become_a_member_on_demand_count | plus: 1 %}
 
-                {% elsif f.name == "Step 2 - Discover Your Design" %}
-                    {% assign step_2_-_discover_your_design_count = step_2_-_discover_your_design_count | plus: 1 %}
-                {% elsif f.name == "Step 2: Discover Your Design (On Demand)" %}
-                    {% assign step_2_discover_your_design_on_demand_count = step_2_discover_your_design_on_demand_count | plus: 1 %}
+            {% elsif f.name == "Step 2 - Discover Your Design" %}
+                {% assign step_2_-_discover_your_design_count = step_2_-_discover_your_design_count | plus: 1 %}
+            {% elsif f.name == "Step 2: Discover Your Design (On Demand)" %}
+                {% assign step_2_discover_your_design_on_demand_count = step_2_discover_your_design_on_demand_count | plus: 1 %}
 
-                {% elsif f.name == "Step 3 - Join a Dream Team" %}
-                    {% assign step_3_-_join_a_dream_team_count = step_3_-_join_a_dream_team_count | plus: 1 %}
-                {% elsif f.name == "Step 3: Join a Dream Team (On Demand)" %}
-                    {% assign step_3_join_a_dream_team_on_demand_count = step_3_join_a_dream_team_on_demand_count | plus: 1 %}
+            {% elsif f.name == "Step 3 - Join a Dream Team" %}
+                {% assign step_3_-_join_a_dream_team_count = step_3_-_join_a_dream_team_count | plus: 1 %}
+            {% elsif f.name == "Step 3: Join a Dream Team (On Demand)" %}
+                {% assign step_3_join_a_dream_team_on_demand_count = step_3_join_a_dream_team_on_demand_count | plus: 1 %}
 
-                {% elsif f.name == "Membership Covenant" %}
-                    {% assign membership_covenant_count = membership_covenant_count | plus: 1 %}
+            {% elsif f.name == "Membership Covenant" %}
+                {% assign membership_covenant_count = membership_covenant_count | plus: 1 %}
 
-                {% elsif f.name == "Welcome Packet" %}
-                    {% assign welcome_packet_count = welcome_packet_count | plus: 1 %}
+            {% elsif f.name == "Welcome Packet" %}
+                {% assign welcome_packet_count = welcome_packet_count | plus: 1 %}
 
-                {% elsif f.name == "DISC Results" %}
-                    {% assign disc_results_count = disc_results_count | plus: 1 %}
+            {% elsif f.name == "DISC Results" %}
+                {% assign disc_results_count = disc_results_count | plus: 1 %}
 
-                {% elsif f.name == "ENNEAGRAM Results" %}
-                    {% assign enneagram_results_count = enneagram_results_count | plus: 1 %}
+            {% elsif f.name == "ENNEAGRAM Results" %}
+                {% assign enneagram_results_count = enneagram_results_count | plus: 1 %}
 
-                {% elsif f.name == "SPIRITUAL GIFTS Results" %}
-                    {% assign spiritual_gifts_results_count = spiritual_gifts_results_count | plus: 1 %}
+            {% elsif f.name == "SPIRITUAL GIFTS Results" %}
+                {% assign spiritual_gifts_results_count = spiritual_gifts_results_count | plus: 1 %}
 
-                {% elsif f.name == "Can Start Serving On or After This Date" %}
-                    {% assign can_start_serving_on_or_after_this_date_count = can_start_serving_on_or_after_this_date_count | plus: 1 %}
+            {% elsif f.name == "Can Start Serving On or After This Date" %}
+                {% assign can_start_serving_on_or_after_this_date_count = can_start_serving_on_or_after_this_date_count | plus: 1 %}
 
-                {% elsif f.name == "Dream Team Interests" %}
-                    {% assign dream_team_interests_count = dream_team_interests_count | plus: 1 %}
+            {% elsif f.name == "Dream Team Interests" %}
+                {% assign dream_team_interests_count = dream_team_interests_count | plus: 1 %}
 
                 {% comment %}{% elsif f.name == "Test Field" %}{% endcomment %}
-                    {% comment %}{% assign test_field_count = test_field_count | plus: 1 %}{% endcomment %}
+                {% comment %}{% assign test_field_count = test_field_count | plus: 1 %}{% endcomment %}
 
-                {% endif %}
+            {% endif %}
 
-            {% endfor %}
+        {% endfor %}
     {% endfor %}
 
     <!-- Calculate Percentages -->
@@ -180,10 +180,11 @@
 
         <!-- Display Pie -->
         <tbody>
-            <tr>
+        <tr>
 
-                    <td class="text-center">Step 1 - Become a Member {{ step_1_total_percent }}% ({{ step_1_-_become_a_member_count | plus: step_1_become_a_member_on_demand_count }})<br>
-                        <img width="300" src="https://quickchart.io/chart?c={
+            <td class="text-center">Step 1 - Become a Member {{ step_1_total_percent }}%
+                ({{ step_1_-_become_a_member_count | plus: step_1_become_a_member_on_demand_count }})<br>
+                <img width="300" src="https://quickchart.io/chart?c={
   type: 'doughnut',
   data: {
     datasets: [
@@ -214,23 +215,25 @@
   },
 }
 "/>
-                    </td>
-                <td class="text-center">Step 1: Become a Member (On Demand) {{ step_1_become_a_member_on_demand_percent }}%<br>
-                        <img width="300" src="https://quickchart.io/chart?c={
+            </td>
+            <td class="text-center">Step 2 - Discover Your Design {{ step_2_-_discover_your_design_percent }}%
+                ({{ step_2_-_discover_your_design_count | plus: step_2_discover_your_design_on_demand_count }})<br>
+                <img width="300" src="https://quickchart.io/chart?c={
   type: 'doughnut',
   data: {
     datasets: [
       {
-        data: [{{ people.size | minus: step_1_become_a_member_on_demand_count }},{{ step_1_become_a_member_on_demand_count }}],
+        data: [{{ people.size | minus: step_2_-_discover_your_design_count }},{{ step_2_-_discover_your_design_count }},{{ step_2_discover_your_design_on_demand_count }}],
         backgroundColor: [
           'rgb(255, 159, 64)',
           'rgb(75, 192, 192)',
+          'rgb(54, 162, 235)',
         ],
 
         label: 'Dataset 1',
       },
     ],
-    labels: ['Incomplete', 'Complete'],
+    labels: ['Incomplete', 'In-Person', 'On-Demand'],
   },
   options: {
 	  plugins: {
@@ -247,100 +250,27 @@
   },
 }
 "/>
-                    </td>
+            </td>
 
-            </tr>
-<tr>
-    <td colspan="2"><h4>Step 2: {{ step_2_-_discover_your_design_count | plus: step_2_discover_your_design_on_demand_count }} - {{ step_2_total_percent }}%</h4></td>
-</tr>
-            <tr>
-                                <td class="text-center">Step 2 - Discover Your Design {{ step_2_-_discover_your_design_percent }}%<br>
-                        <img width="300" src="https://quickchart.io/chart?c={
-  type: 'doughnut',
-  data: {
-    datasets: [
-      {
-        data: [{{ people.size | minus: step_2_-_discover_your_design_count }},{{ step_2_-_discover_your_design_count }}],
-        backgroundColor: [
-          'rgb(255, 159, 64)',
-          'rgb(75, 192, 192)',
-        ],
-
-        label: 'Dataset 1',
-      },
-    ],
-    labels: ['Incomplete', 'Complete'],
-  },
-  options: {
-	  plugins: {
-    datalabels: {
-    display: true,
-    borderRadius: 4,
-    font: {
-          size: 22,
-          weight: 'bold'
-        },
-    backgroundColor: 'white',
-      }
-    }
-  },
-}
-"/>
-                    </td>
-                    <td class="text-center">Step 2: Discover Your Design (On Demand)  {{ step_2_discover_your_design_on_demand_percent }}%<br>
-                        <img width="300" src="https://quickchart.io/chart?c={
-  type: 'doughnut',
-  data: {
-    datasets: [
-      {
-        data: [{{ people.size | minus: step_2_discover_your_design_on_demand_count }},{{ step_2_discover_your_design_on_demand_count }}],
-        backgroundColor: [
-          'rgb(255, 159, 64)',
-          'rgb(75, 192, 192)',
-        ],
-
-        label: 'Dataset 1',
-      },
-    ],
-    labels: ['Incomplete', 'Complete'],
-  },
-  options: {
-	  plugins: {
-    datalabels: {
-    display: true,
-    borderRadius: 4,
-    font: {
-          size: 22,
-          weight: 'bold'
-        },
-    backgroundColor: 'white',
-      }
-    }
-  },
-}
-"/>
-                    </td>
         </tr>
-<tr>
-    <td colspan="2"><h4>Step 3: {{ step_3_-_join_a_dream_team_count | plus: step_3_join_a_dream_team_on_demand_count }} - {{ step_3_total_percent }}%</h4></td>
-</tr>
-            <tr>
-                                <td class="text-center">Step 3 - Join a Dream Team {{ step_3_-_join_a_dream_team_percent }}%<br>
-                        <img width="300" src="https://quickchart.io/chart?c={
+        <tr>
+            <td class="text-center">Step 3 - Join a Dream Team {{ step_3_-_join_a_dream_team_percent }}% ({{ step_3_-_join_a_dream_team_count | plus: step_3_join_a_dream_team_on_demand_count }})<br>
+                <img width="300" src="https://quickchart.io/chart?c={
   type: 'doughnut',
   data: {
     datasets: [
       {
-        data: [{{ people.size | minus: step_3_-_join_a_dream_team_count }},{{ step_3_-_join_a_dream_team_count }}],
+        data: [{{ people.size | minus: step_3_-_join_a_dream_team_count }},{{ step_3_-_join_a_dream_team_count }},{{ step_3_join_a_dream_team_on_demand_count }}],
         backgroundColor: [
           'rgb(255, 159, 64)',
           'rgb(75, 192, 192)',
+          'rgb(54, 162, 235)',
         ],
 
         label: 'Dataset 1',
       },
     ],
-    labels: ['Incomplete', 'Complete'],
+    labels: ['Incomplete', 'In-Person', 'On-Demand'],
   },
   options: {
 	  plugins: {
@@ -357,44 +287,9 @@
   },
 }
 "/>
-                    </td>
-                    <td class="text-center">Step 3: Join a Dream Team (On Demand) {{ step_3_join_a_dream_team_on_demand_percent }}%<br>
-                        <img width="300" src="https://quickchart.io/chart?c={
-  type: 'doughnut',
-  data: {
-    datasets: [
-      {
-        data: [{{ people.size | minus: step_3_join_a_dream_team_on_demand_count }},{{ step_3_join_a_dream_team_on_demand_count }}],
-        backgroundColor: [
-          'rgb(255, 159, 64)',
-          'rgb(75, 192, 192)',
-        ],
-
-        label: 'Dataset 1',
-      },
-    ],
-    labels: ['Incomplete', 'Complete'],
-  },
-  options: {
-	  plugins: {
-    datalabels: {
-    display: true,
-    borderRadius: 4,
-    font: {
-          size: 22,
-          weight: 'bold'
-        },
-    backgroundColor: 'white',
-      }
-    }
-  },
-}
-"/>
-                    </td>
-    </tr>
-            <tr>
-                                <td class="text-center">Membership Covenant {{ membership_covenant_percent }}%<br>
-                        <img width="300" src="https://quickchart.io/chart?c={
+            </td>
+            <td class="text-center">Membership Covenant {{ membership_covenant_percent }}%<br>
+                <img width="300" src="https://quickchart.io/chart?c={
   type: 'doughnut',
   data: {
     datasets: [
@@ -425,9 +320,11 @@
   },
 }
 "/>
-                    </td>
-                    <td class="text-center">Welcome Packet {{ welcome_packet_percent }}%<br>
-                        <img width="300" src="https://quickchart.io/chart?c={
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">Welcome Packet {{ welcome_packet_percent }}%<br>
+                <img width="300" src="https://quickchart.io/chart?c={
   type: 'doughnut',
   data: {
     datasets: [
@@ -458,11 +355,9 @@
   },
 }
 "/>
-                    </td>
-    </tr>
-            <tr>
-                                <td class="text-center">DISC Results {{ disc_results_percent }}%<br>
-                        <img width="300" src="https://quickchart.io/chart?c={
+            </td>
+            <td class="text-center">DISC Results {{ disc_results_percent }}%<br>
+                <img width="300" src="https://quickchart.io/chart?c={
   type: 'doughnut',
   data: {
     datasets: [
@@ -493,9 +388,11 @@
   },
 }
 "/>
-                    </td>
-                    <td class="text-center">ENNEAGRAM Results {{ enneagram_results_percent }}%<br>
-                        <img width="300" src="https://quickchart.io/chart?c={
+            </td>
+             </tr>
+        <tr>
+            <td class="text-center">ENNEAGRAM Results {{ enneagram_results_percent }}%<br>
+                <img width="300" src="https://quickchart.io/chart?c={
   type: 'doughnut',
   data: {
     datasets: [
@@ -526,11 +423,10 @@
   },
 }
 "/>
-                    </td>
-    </tr>
-            <tr>
-                                <td class="text-center">SPIRITUAL GIFTS Results {{ spiritual_gifts_results_percent }}%<br>
-                        <img width="300" src="https://quickchart.io/chart?c={
+            </td>
+
+            <td class="text-center">SPIRITUAL GIFTS Results {{ spiritual_gifts_results_percent }}%<br>
+                <img width="300" src="https://quickchart.io/chart?c={
   type: 'doughnut',
   data: {
     datasets: [
@@ -561,9 +457,12 @@
   },
 }
 "/>
-                    </td>
-                    <td class="text-center">Can Start Serving On or After This Date {{ can_start_serving_on_or_after_this_date_percent }}%<br>
-                        <img width="300" src="https://quickchart.io/chart?c={
+            </td>
+             </tr>
+        <tr>
+            <td class="text-center">Can Start Serving On or After This
+                Date {{ can_start_serving_on_or_after_this_date_percent }}%<br>
+                <img width="300" src="https://quickchart.io/chart?c={
   type: 'doughnut',
   data: {
     datasets: [
@@ -594,11 +493,10 @@
   },
 }
 "/>
-                    </td>
-    </tr>
-            <tr>
-                                <td class="text-center">Dream Team Interests {{ dream_team_interests_percent }}%<br>
-                        <img width="300" src="https://quickchart.io/chart?c={
+            </td>
+
+            <td class="text-center">Dream Team Interests {{ dream_team_interests_percent }}%<br>
+                <img width="300" src="https://quickchart.io/chart?c={
   type: 'doughnut',
   data: {
     datasets: [
@@ -629,8 +527,8 @@
   },
 }
 "/>
-                    </td>
-    </tr>
+            </td>
+        </tr>
         </tbody>
     </table>
 </div>
