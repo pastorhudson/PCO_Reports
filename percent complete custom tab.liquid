@@ -1,0 +1,638 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!-- Setup -->
+    {% assign member_status = "Member" %}
+    {% for result in results limit: 1 %}
+        <!-- Change the custom tab to match your custom tab -->
+        {% capture tab_fields %}
+            {{ result.person.custom_tabs.growth_track }}
+        {% endcapture %}
+    {% endfor %}
+    {% assign custom_fields = tab_fields | split: "," %}
+    {% assign custom_fields_count = custom_fields | size | divided_by: 2 | plus: 1 %}
+    {% assign custom_fields_range = (1..custom_fields_count) %}
+
+
+    {% assign step_1_-_become_a_member_count = 0 %}
+    {% assign step_1_become_a_member_on_demand_count = 0 %}
+
+    {% assign step_2_-_discover_your_design_count = 0 %}
+    {% assign step_2_discover_your_design_on_demand_count = 0 %}
+
+    {% comment %}{% assign discover_your_design_count = 0 %}{% endcomment %}
+    {% assign step_3_-_join_a_dream_team_count = 0 %}
+    {% assign step_3_join_a_dream_team_on_demand_count = 0 %}
+
+    {% comment %}{% assign dream_team_overview_count = 0 %}{% endcomment %}
+    {% assign membership_covenant_count = 0 %}
+    {% assign welcome_packet_count = 0 %}
+    {% assign disc_results_count = 0 %}
+    {% assign enneagram_results_count = 0 %}
+    {% assign spiritual_gifts_results_count = 0 %}
+    {% assign can_start_serving_on_or_after_this_date_count = 0 %}
+    {% assign dream_team_interests_count = 0 %}
+    {% comment %}{% assign test_field_count = 0 %}{% endcomment %}
+
+
+    <!-- Count data totals -->
+    {% for result in results %}
+            {% for f in result.person.custom_tabs.growth_track.fields %}
+                {% if f.name == "Step 1 - Become a Member" %}
+                    {% assign step_1_-_become_a_member_count = step_1_-_become_a_member_count | plus: 1 %}
+                {% elsif f.name == "Step 1: Become a Member (On Demand)" %}
+                    {% assign step_1_become_a_member_on_demand_count = step_1_become_a_member_on_demand_count | plus: 1 %}
+
+                {% elsif f.name == "Step 2 - Discover Your Design" %}
+                    {% assign step_2_-_discover_your_design_count = step_2_-_discover_your_design_count | plus: 1 %}
+                {% elsif f.name == "Step 2: Discover Your Design (On Demand)" %}
+                    {% assign step_2_discover_your_design_on_demand_count = step_2_discover_your_design_on_demand_count | plus: 1 %}
+
+                {% elsif f.name == "Step 3 - Join a Dream Team" %}
+                    {% assign step_3_-_join_a_dream_team_count = step_3_-_join_a_dream_team_count | plus: 1 %}
+                {% elsif f.name == "Step 3: Join a Dream Team (On Demand)" %}
+                    {% assign step_3_join_a_dream_team_on_demand_count = step_3_join_a_dream_team_on_demand_count | plus: 1 %}
+
+                {% elsif f.name == "Membership Covenant" %}
+                    {% assign membership_covenant_count = membership_covenant_count | plus: 1 %}
+
+                {% elsif f.name == "Welcome Packet" %}
+                    {% assign welcome_packet_count = welcome_packet_count | plus: 1 %}
+
+                {% elsif f.name == "DISC Results" %}
+                    {% assign disc_results_count = disc_results_count | plus: 1 %}
+
+                {% elsif f.name == "ENNEAGRAM Results" %}
+                    {% assign enneagram_results_count = enneagram_results_count | plus: 1 %}
+
+                {% elsif f.name == "SPIRITUAL GIFTS Results" %}
+                    {% assign spiritual_gifts_results_count = spiritual_gifts_results_count | plus: 1 %}
+
+                {% elsif f.name == "Can Start Serving On or After This Date" %}
+                    {% assign can_start_serving_on_or_after_this_date_count = can_start_serving_on_or_after_this_date_count | plus: 1 %}
+
+                {% elsif f.name == "Dream Team Interests" %}
+                    {% assign dream_team_interests_count = dream_team_interests_count | plus: 1 %}
+
+                {% comment %}{% elsif f.name == "Test Field" %}{% endcomment %}
+                    {% comment %}{% assign test_field_count = test_field_count | plus: 1 %}{% endcomment %}
+
+                {% endif %}
+
+            {% endfor %}
+    {% endfor %}
+
+    <!-- Calculate Percentages -->
+    {% assign step_1_-_become_a_member_percent = step_1_-_become_a_member_count | times: 100.0 | divided_by: people.size | round: 0 %}
+    {% assign step_1_become_a_member_on_demand_percent = step_1_become_a_member_on_demand_count | times: 100.0 | divided_by: people.size | round: 0 %}
+    {% assign step_1_total_percent = step_1_-_become_a_member_percent | plus: step_1_become_a_member_on_demand_percent %}
+
+
+    {% assign step_2_-_discover_your_design_percent = step_2_-_discover_your_design_count | times: 100.0 | divided_by: people.size | round: 0 %}
+    {% assign step_2_discover_your_design_on_demand_percent = step_2_discover_your_design_on_demand_count | times: 100.0 | divided_by: people.size | round: 0 %}
+    {% assign step_2_total_percent = step_2_discover_your_design_on_demand_percent | plus: step_2_-_discover_your_design_percent %}
+
+
+    {% assign step_3_-_join_a_dream_team_percent = step_3_-_join_a_dream_team_count | times: 100.0 | divided_by: people.size | round: 0 %}
+    {% assign step_3_join_a_dream_team_on_demand_percent = step_3_join_a_dream_team_on_demand_count | times: 100.0 | divided_by: people.size | round: 0 %}
+    {% assign step_3_total_percent = step_3_-_join_a_dream_team_percent | plus: step_3_join_a_dream_team_on_demand_percent %}
+
+
+    {% assign membership_covenant_percent = membership_covenant_count | times: 100.0 | divided_by: people.size | round: 0 %}
+    {% assign welcome_packet_percent = welcome_packet_count | times: 100.0 | divided_by: people.size | round: 0 %}
+    {% assign disc_results_percent = disc_results_count | times: 100.0 | divided_by: people.size | round: 0 %}
+    {% assign enneagram_results_percent = enneagram_results_count | times: 100.0 | divided_by: people.size | round: 0 %}
+    {% assign spiritual_gifts_results_percent = spiritual_gifts_results_count | times: 100.0 | divided_by: people.size | round: 0 %}
+    {% assign can_start_serving_on_or_after_this_date_percent = can_start_serving_on_or_after_this_date_count | times: 100.0 | divided_by: people.size | round: 0 %}
+    {% assign dream_team_interests_percent = dream_team_interests_count | times: 100.0 | divided_by: people.size | round: 0 %}
+    {% comment %}{% assign test_field_percent = test_field_count | times: 100.0 | divided_by: people.size | round: 2 %}{% endcomment %}
+
+
+    {{ helpers.bootstrap_3 }}
+    <!-- This report is styled using the Bootstrap framework. http://getbootstrap.com/css/
+				 If you'd rather provide your own styles, add them to the style section below. -->
+
+
+    <style>
+        @page {
+            margin: .125in;
+        }
+
+        /*-- PDF margin reset --*/
+
+        tr.person > td {
+            padding: 0.5em;
+        }
+
+
+        /*tr:nth-child(even) {*/
+        /*    background-color: #edf2f7 !important;*/
+        /*}*/
+
+        /*thead {*/
+        /*    border-bottom: 1px solid #bec9d3;*/
+        /*}*/
+
+        th {
+            padding: .5em;
+        }
+
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 25px 25px 25px 25px;
+            -moz-border-radius: 25px 25px 25px 25px;
+            -webkit-border-radius: 25px 25px 25px 25px;
+        }
+
+        .container {
+            width: 100%;
+            padding-top: 0px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="pull-right">
+        <div class="well well-sm text-right">
+            {{ people.size }} {{ people.size | pluralize: "person", "people" }}<br>
+            Report Date: {{ list.updated_at | date: "%B %e, %Y" }}
+        </div>
+    </div>
+    <h2>
+        {{ list.name }}
+        <br>
+        <small>
+            {{ organization.name }}
+        </small>
+    </h2>
+
+    <table class="table mt-0" style="width: 100%">
+        <thead>
+
+        <tr>
+            <th></th>
+            <th></th>
+        </tr>
+
+        </thead>
+
+        <!-- Display Pie -->
+        <tbody>
+            <tr>
+
+                    <td class="text-center">Step 1 - Become a Member {{ step_1_total_percent }}% ({{ step_1_-_become_a_member_count | plus: step_1_become_a_member_on_demand_count }})<br>
+                        <img width="300" src="https://quickchart.io/chart?c={
+  type: 'doughnut',
+  data: {
+    datasets: [
+      {
+        data: [{{ people.size | minus: step_1_-_become_a_member_count }},{{ step_1_-_become_a_member_count }},{{ step_1_become_a_member_on_demand_count }}],
+        backgroundColor: [
+          'rgb(255, 159, 64)',
+          'rgb(75, 192, 192)',
+          'rgb(54, 162, 235)',
+        ],
+        label: 'Dataset 1',
+      },
+    ],
+    labels: ['Incomplete', 'In-Person', 'On-Demand'],
+  },
+  options: {
+	  plugins: {
+    datalabels: {
+    display: true,
+    borderRadius: 4,
+    font: {
+          size: 22,
+          weight: 'bold'
+        },
+    backgroundColor: 'white',
+      }
+    }
+  },
+}
+"/>
+                    </td>
+                <td class="text-center">Step 1: Become a Member (On Demand) {{ step_1_become_a_member_on_demand_percent }}%<br>
+                        <img width="300" src="https://quickchart.io/chart?c={
+  type: 'doughnut',
+  data: {
+    datasets: [
+      {
+        data: [{{ people.size | minus: step_1_become_a_member_on_demand_count }},{{ step_1_become_a_member_on_demand_count }}],
+        backgroundColor: [
+          'rgb(255, 159, 64)',
+          'rgb(75, 192, 192)',
+        ],
+
+        label: 'Dataset 1',
+      },
+    ],
+    labels: ['Incomplete', 'Complete'],
+  },
+  options: {
+	  plugins: {
+    datalabels: {
+    display: true,
+    borderRadius: 4,
+    font: {
+          size: 22,
+          weight: 'bold'
+        },
+    backgroundColor: 'white',
+      }
+    }
+  },
+}
+"/>
+                    </td>
+
+            </tr>
+<tr>
+    <td colspan="2"><h4>Step 2: {{ step_2_-_discover_your_design_count | plus: step_2_discover_your_design_on_demand_count }} - {{ step_2_total_percent }}%</h4></td>
+</tr>
+            <tr>
+                                <td class="text-center">Step 2 - Discover Your Design {{ step_2_-_discover_your_design_percent }}%<br>
+                        <img width="300" src="https://quickchart.io/chart?c={
+  type: 'doughnut',
+  data: {
+    datasets: [
+      {
+        data: [{{ people.size | minus: step_2_-_discover_your_design_count }},{{ step_2_-_discover_your_design_count }}],
+        backgroundColor: [
+          'rgb(255, 159, 64)',
+          'rgb(75, 192, 192)',
+        ],
+
+        label: 'Dataset 1',
+      },
+    ],
+    labels: ['Incomplete', 'Complete'],
+  },
+  options: {
+	  plugins: {
+    datalabels: {
+    display: true,
+    borderRadius: 4,
+    font: {
+          size: 22,
+          weight: 'bold'
+        },
+    backgroundColor: 'white',
+      }
+    }
+  },
+}
+"/>
+                    </td>
+                    <td class="text-center">Step 2: Discover Your Design (On Demand)  {{ step_2_discover_your_design_on_demand_percent }}%<br>
+                        <img width="300" src="https://quickchart.io/chart?c={
+  type: 'doughnut',
+  data: {
+    datasets: [
+      {
+        data: [{{ people.size | minus: step_2_discover_your_design_on_demand_count }},{{ step_2_discover_your_design_on_demand_count }}],
+        backgroundColor: [
+          'rgb(255, 159, 64)',
+          'rgb(75, 192, 192)',
+        ],
+
+        label: 'Dataset 1',
+      },
+    ],
+    labels: ['Incomplete', 'Complete'],
+  },
+  options: {
+	  plugins: {
+    datalabels: {
+    display: true,
+    borderRadius: 4,
+    font: {
+          size: 22,
+          weight: 'bold'
+        },
+    backgroundColor: 'white',
+      }
+    }
+  },
+}
+"/>
+                    </td>
+        </tr>
+<tr>
+    <td colspan="2"><h4>Step 3: {{ step_3_-_join_a_dream_team_count | plus: step_3_join_a_dream_team_on_demand_count }} - {{ step_3_total_percent }}%</h4></td>
+</tr>
+            <tr>
+                                <td class="text-center">Step 3 - Join a Dream Team {{ step_3_-_join_a_dream_team_percent }}%<br>
+                        <img width="300" src="https://quickchart.io/chart?c={
+  type: 'doughnut',
+  data: {
+    datasets: [
+      {
+        data: [{{ people.size | minus: step_3_-_join_a_dream_team_count }},{{ step_3_-_join_a_dream_team_count }}],
+        backgroundColor: [
+          'rgb(255, 159, 64)',
+          'rgb(75, 192, 192)',
+        ],
+
+        label: 'Dataset 1',
+      },
+    ],
+    labels: ['Incomplete', 'Complete'],
+  },
+  options: {
+	  plugins: {
+    datalabels: {
+    display: true,
+    borderRadius: 4,
+    font: {
+          size: 22,
+          weight: 'bold'
+        },
+    backgroundColor: 'white',
+      }
+    }
+  },
+}
+"/>
+                    </td>
+                    <td class="text-center">Step 3: Join a Dream Team (On Demand) {{ step_3_join_a_dream_team_on_demand_percent }}%<br>
+                        <img width="300" src="https://quickchart.io/chart?c={
+  type: 'doughnut',
+  data: {
+    datasets: [
+      {
+        data: [{{ people.size | minus: step_3_join_a_dream_team_on_demand_count }},{{ step_3_join_a_dream_team_on_demand_count }}],
+        backgroundColor: [
+          'rgb(255, 159, 64)',
+          'rgb(75, 192, 192)',
+        ],
+
+        label: 'Dataset 1',
+      },
+    ],
+    labels: ['Incomplete', 'Complete'],
+  },
+  options: {
+	  plugins: {
+    datalabels: {
+    display: true,
+    borderRadius: 4,
+    font: {
+          size: 22,
+          weight: 'bold'
+        },
+    backgroundColor: 'white',
+      }
+    }
+  },
+}
+"/>
+                    </td>
+    </tr>
+            <tr>
+                                <td class="text-center">Membership Covenant {{ membership_covenant_percent }}%<br>
+                        <img width="300" src="https://quickchart.io/chart?c={
+  type: 'doughnut',
+  data: {
+    datasets: [
+      {
+        data: [{{ people.size | minus: membership_covenant_count }},{{ membership_covenant_count }}],
+        backgroundColor: [
+          'rgb(255, 159, 64)',
+          'rgb(75, 192, 192)',
+        ],
+
+        label: 'Dataset 1',
+      },
+    ],
+    labels: ['Incomplete', 'Complete'],
+  },
+  options: {
+	  plugins: {
+    datalabels: {
+    display: true,
+    borderRadius: 4,
+    font: {
+          size: 22,
+          weight: 'bold'
+        },
+    backgroundColor: 'white',
+      }
+    }
+  },
+}
+"/>
+                    </td>
+                    <td class="text-center">Welcome Packet {{ welcome_packet_percent }}%<br>
+                        <img width="300" src="https://quickchart.io/chart?c={
+  type: 'doughnut',
+  data: {
+    datasets: [
+      {
+        data: [{{ people.size | minus: welcome_packet_count }},{{ welcome_packet_count }}],
+        backgroundColor: [
+          'rgb(255, 159, 64)',
+          'rgb(75, 192, 192)',
+        ],
+
+        label: 'Dataset 1',
+      },
+    ],
+    labels: ['Incomplete', 'Complete'],
+  },
+  options: {
+	  plugins: {
+    datalabels: {
+    display: true,
+    borderRadius: 4,
+    font: {
+          size: 22,
+          weight: 'bold'
+        },
+    backgroundColor: 'white',
+      }
+    }
+  },
+}
+"/>
+                    </td>
+    </tr>
+            <tr>
+                                <td class="text-center">DISC Results {{ disc_results_percent }}%<br>
+                        <img width="300" src="https://quickchart.io/chart?c={
+  type: 'doughnut',
+  data: {
+    datasets: [
+      {
+        data: [{{ people.size | minus: disc_results_count }},{{ disc_results_count }}],
+        backgroundColor: [
+          'rgb(255, 159, 64)',
+          'rgb(75, 192, 192)',
+        ],
+
+        label: 'Dataset 1',
+      },
+    ],
+    labels: ['Incomplete', 'Complete'],
+  },
+  options: {
+	  plugins: {
+    datalabels: {
+    display: true,
+    borderRadius: 4,
+    font: {
+          size: 22,
+          weight: 'bold'
+        },
+    backgroundColor: 'white',
+      }
+    }
+  },
+}
+"/>
+                    </td>
+                    <td class="text-center">ENNEAGRAM Results {{ enneagram_results_percent }}%<br>
+                        <img width="300" src="https://quickchart.io/chart?c={
+  type: 'doughnut',
+  data: {
+    datasets: [
+      {
+        data: [{{ people.size | minus: enneagram_results_count }},{{ enneagram_results_count }}],
+        backgroundColor: [
+          'rgb(255, 159, 64)',
+          'rgb(75, 192, 192)',
+        ],
+
+        label: 'Dataset 1',
+      },
+    ],
+    labels: ['Incomplete', 'Complete'],
+  },
+  options: {
+	  plugins: {
+    datalabels: {
+    display: true,
+    borderRadius: 4,
+    font: {
+          size: 22,
+          weight: 'bold'
+        },
+    backgroundColor: 'white',
+      }
+    }
+  },
+}
+"/>
+                    </td>
+    </tr>
+            <tr>
+                                <td class="text-center">SPIRITUAL GIFTS Results {{ spiritual_gifts_results_percent }}%<br>
+                        <img width="300" src="https://quickchart.io/chart?c={
+  type: 'doughnut',
+  data: {
+    datasets: [
+      {
+        data: [{{ people.size | minus: spiritual_gifts_results_count }},{{ spiritual_gifts_results_count }}],
+        backgroundColor: [
+          'rgb(255, 159, 64)',
+          'rgb(75, 192, 192)',
+        ],
+
+        label: 'Dataset 1',
+      },
+    ],
+    labels: ['Incomplete', 'Complete'],
+  },
+  options: {
+	  plugins: {
+    datalabels: {
+    display: true,
+    borderRadius: 4,
+    font: {
+          size: 22,
+          weight: 'bold'
+        },
+    backgroundColor: 'white',
+      }
+    }
+  },
+}
+"/>
+                    </td>
+                    <td class="text-center">Can Start Serving On or After This Date {{ can_start_serving_on_or_after_this_date_percent }}%<br>
+                        <img width="300" src="https://quickchart.io/chart?c={
+  type: 'doughnut',
+  data: {
+    datasets: [
+      {
+        data: [{{ people.size | minus: can_start_serving_on_or_after_this_date_count }},{{ can_start_serving_on_or_after_this_date_count }}],
+        backgroundColor: [
+          'rgb(255, 159, 64)',
+          'rgb(75, 192, 192)',
+        ],
+
+        label: 'Dataset 1',
+      },
+    ],
+    labels: ['Incomplete', 'Complete'],
+  },
+  options: {
+	  plugins: {
+    datalabels: {
+    display: true,
+    borderRadius: 4,
+    font: {
+          size: 22,
+          weight: 'bold'
+        },
+    backgroundColor: 'white',
+      }
+    }
+  },
+}
+"/>
+                    </td>
+    </tr>
+            <tr>
+                                <td class="text-center">Dream Team Interests {{ dream_team_interests_percent }}%<br>
+                        <img width="300" src="https://quickchart.io/chart?c={
+  type: 'doughnut',
+  data: {
+    datasets: [
+      {
+        data: [{{ people.size | minus: dream_team_interests_count }},{{ dream_team_interests_count }},],
+        backgroundColor: [
+          'rgb(255, 159, 64)',
+          'rgb(75, 192, 192)',
+        ],
+
+        label: 'Dataset 1',
+      },
+    ],
+    labels: ['Incomplete', 'Complete'],
+  },
+  options: {
+	  plugins: {
+    datalabels: {
+    display: true,
+    borderRadius: 4,
+    font: {
+          size: 22,
+          weight: 'bold'
+        },
+    backgroundColor: 'white',
+      }
+    }
+  },
+}
+"/>
+                    </td>
+    </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
