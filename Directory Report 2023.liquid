@@ -1,0 +1,312 @@
+{% assign sorted_people = people | sort: 'last_name' %}
+
+<html>
+<head>
+    <link rel="stylesheet" href="https://use.typekit.net/waw0tlj.css">
+    {{ helpers.bootstrap_3 }}
+    <style>
+
+        @page {
+            margin: 0.5in;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50px 50px 50px 50px;
+            padding: 2px;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: auto;
+            width: 90%;
+        }
+
+        table th {
+            border-top: solid 1px #000;
+            border-bottom: solid 1px #000;
+            font-family: montserrat, sans-serif;
+            font-size: 11px;
+            font-style: normal;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: left;
+            padding: 10px;
+            word-wrap: break-word;
+        }
+
+        table tr {
+            break-inside: avoid-page;
+        !important page-break-inside: avoid;
+        !important page-break-after: auto;
+        }
+
+        table tr td {
+            border-bottom: solid 1px #bfbfbf;
+            padding: 10px;
+            vertical-align: top;
+            word-wrap: break-word;
+            width: auto;
+            font-size: 11px;
+            font-family: eb-garamond, serif;
+            font-weight: 400;
+            font-style: normal;
+            break-inside: avoid-page;
+        }
+
+        table tr td:first-child {
+            width: 29%;
+            break-inside: avoid-page;
+        }
+
+        table tr td:nth-child(2) {
+            width: 23%;
+
+        }
+
+        table tr td:nth-child(3) {
+            width: 31%;
+
+        }
+
+        table tr td:last-child {
+            width: 17%;
+
+        }
+
+        .container {
+            width: 100%;
+            padding-top: 50px;
+            padding-bottom: 50px;
+
+        }
+
+        .media-left {
+
+        }
+
+        .person {
+
+        }
+
+        .family_member {
+            width: 100px;
+            float: left;
+            padding-right: 15px;
+
+        }
+
+        .family_member_name {
+            text-align: center;
+            padding-top: 3px;
+
+        }
+
+        .tab {
+            width: 49%;
+            float: left;
+            padding: 10px;
+
+        }
+
+        .tab-title {
+            font-size: 1.3em;
+            background-color: #eee;
+            padding: 5px;
+            border: 1px solid #eee;
+
+        }
+
+        .answer {
+            padding: 5px;
+            border: 1px solid #eee;
+            border-top: 0;
+
+        }
+
+    </style>
+</head>
+
+
+<!--Directory Info -->
+
+<body>
+<div class="clearfix"></div>
+<div class="container">
+    <table style="width: 100%">
+        <thead>
+        <tr>
+            <th>Picture(s)</th>
+            <th>Name</th>
+            <th>Contact Information</th>
+            <th>Household Children</th>
+        </tr>
+        </thead>
+
+
+        <tbody>
+
+        {% for person in sorted_people %}
+
+            <!-- Prints All People -->
+
+            {% for household in person.households %}
+                {% if household.primary_contact.name == person.name %}
+                    <tr>
+                        <td>
+
+                            {% for household_person in household.people %}
+                            {% if household_person.id == household.primary_contact.id %}
+                            {% unless household_person.child %}
+
+                            <div class="media-left">
+                                <img class="avatar {% if household_person.id == household.primary_contact.id %}primary_contact{% endif %}"
+                                     src="{% if household_person.photo_url %}{{ household_person.photo_url }}{% else %}{{ no_avatar }}{% endif %}"
+                                     alt="avatar">
+
+                                {% if marital_status == married %}
+                                    {% for household_person in household.people %}
+                                        {% unless household_person.id == household.primary_contact.id %}
+                                            {% unless household_person.child %}
+                                                <img class="avatar {% if household_person.id == household.primary_contact.id %}primary_contact{% endif %}"
+                                                     src="{% if household_person.photo_url %}{{ household_person.photo_url }}{% else %}{{ no_avatar }}{% endif %}"
+                                                     alt="avatar">
+                                            {% endunless %}
+                                        {% endunless %}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </td>
+
+                        <td>
+                            {% for household_person in household.people %}
+                                {% if household_person.id == household.primary_contact.id %}
+                                    {% unless household_person.child %}
+                                        <strong> {{ household_person.last_name }},
+                                            {{ household_person.first_name }}</strong>
+
+                                    {% endunless %}
+                                {% endif %}
+                            {% endfor %}
+
+
+                            <strong> {% if marital_status == married %}
+                                {% for household_person in household.people %}
+                                {% unless household_person.id == household.primary_contact.id %}
+                                {% unless household_person.child %}
+                                & {{ household_person.first_name }}</strong>
+
+                            {% endunless %}
+                            {% endunless %}
+                            {% endfor %}
+                            {% endif %}
+
+
+                            <strong>{% if marital_status == single %}
+                                {% for household_person in household.people %}
+                                {% unless household_person.id == household.primary_contact.id %}
+                                {% unless household_person.child %}</strong>
+
+                            {% endunless %}
+                            {% endunless %}
+                            {% endfor %}
+                            {% endif %}
+
+
+                            <br>
+                            {% for primary_contact in person.primary_contacts %}
+                                {{ primary_contact.primary_address.postal_address }}
+                                <br><br>
+
+                                {% for phone_number in household_person.phone_numbers %}
+                                    {% if phone_number.location == home %} Home Phone: {{ phone_number.number }}
+                                        <br>{% endif %}
+
+                                {% endfor %}
+                            {% endfor %} <br>
+                            {% endunless %}
+                            {% endif %}
+                            {% endfor %}<br>
+                        </td>
+
+
+                        <td>
+
+
+                            {% for household_person in household.people %}
+                                {% if household_person.id == household.primary_contact.id %}
+                                    {% unless household_person.child %}
+
+
+                                        <strong>{{ household_person.first_name }}
+                                            {{ household_person.name_suffix }}</strong><br>
+
+                                        {% for phone_number in household_person.phone_numbers %}
+                                            {% unless phone_number.location == home %}
+                                                {{ phone_number.location }}: {{ phone_number.number }}
+                                                <br>{% endunless %}{% endfor %}
+                                        {% for email in household_person.emails %}
+                                            <em>Email:</em> {{ email.address }}<br>{% endfor %}
+
+                                        <br>
+
+                                    {% endunless %}
+                                {% endif %}
+                            {% endfor %}
+
+
+
+                            {% for household_person in household.people %}
+                            {% unless household_person.id == household.primary_contact.id %}
+                            {% unless household_person.child %}
+
+                            <div class="media-left">
+
+                                <strong>{{ household_person.first_name }}
+                                    {{ household_person.name_suffix }}<br> </strong>
+
+                                {% for phone_number in household_person.phone_numbers %}
+                                    {{ phone_number.location }}: {{ phone_number.number }}<br>
+                                {% endfor %}
+
+
+                                {% for email in household_person.emails %}
+                                    <em>Email:</em> {{ email.address }}<br>
+                                {% endfor %}
+                                {% endunless %}
+                                {% endunless %}
+                                {% endfor %}
+                            </div>
+                        </td>
+
+                        <td>{% for household_person in household.people %}
+                            {% if household_person.child %}
+
+                            <div class="media-left">
+
+
+                                {{ household_person.first_name }} {{ household_person.last_name }}
+                                {{ household_person.name_suffix }} <br>
+                            </div>
+                                {% else %}
+                                 <div class="media-left">
+                                     <br></div>
+                                {% endif %}
+                                {% endfor %}
+                        </td>
+
+                    </tr>
+
+                {% endif %}
+            {% endfor %}
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
