@@ -1,0 +1,124 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <style>
+        @page {
+            margin: .25in;
+        }
+
+        /*-- PDF margin reset --*/
+        .container {
+            width: 800;
+            margin: 5px auto;
+            columns: 2;
+            column-gap: 10px;
+            padding-top: 15px;
+        }
+
+        .box {
+            width: 350px;
+            padding: 5px;
+            background-color: #ffffff;
+            border: .5px solid grey;
+            margin-bottom: 0px;
+            break-inside: avoid;
+        }
+
+        .box table {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .commission {
+            font-size: large;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="box">
+        <div class="commission">{{ list.name | remove: "AUTO: " }}</div>
+        {{ organization.name }}<br>
+        Report Date: {{ list.updated_at | date: "%B %e, %Y" }}
+        - {{ people.size }} {{ people.size | pluralize: "person", "people" }}<br>
+    </div>
+    <!-- Create an array of '!' separated shepherds -->
+
+    {% assign households_by_shepherd = households | sort_natural: "primary_contact.custom_tabs.shepherding.shepherd" | reverse %}
+
+    {% assign current_shepherd = "" %}
+    {% assign new_list = true %}
+
+
+    {% for household in households_by_shepherd %}
+    {% if current_shepherd != household.primary_contact.custom_tabs.shepherding.shepherd.value %}
+    {% assign current_shepherd = household.primary_contact.custom_tabs.shepherding.shepherd.value %}
+    {% assign new_list = true %}
+    </tbody>
+    </table>
+</div>
+
+{% endif %}
+{% if new_list %}
+<div class="box">
+    <table class="table table-sm">
+        <thead>
+        <tr>
+            {% if current_shepherd == "" %}
+                <th>Orphan</th>
+            {% else %}
+                <th>{{ current_shepherd }}</th>
+            {% endif %}
+            <th></th>
+            <th>Female Shephard</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                {% for person in household.active_adults %}
+                    {{ person.first_name }},
+                {% endfor %}
+            </td>
+            <td>{{ household.primary_contact.last_name }}
+            </td>
+            <td>
+                {% for person in household.active_adults %}
+                    {% if person.custom_tabs.shepherding.woman_shepherd.value %}
+                        {{ household.primary_contact.custom_tabs.shepherding.woman_shepherd }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        {% assign new_list = false %}
+        {% else %}
+            <tr>
+                <td>
+                    {% for person in household.active_adults %}
+                        {{ person.first_name }},
+                    {% endfor %}
+                </td>
+                <td>{{ household.active_adults.first.last_name }}
+                </td>
+                <td>
+                    {% for person in household.active_adults %}
+                        {% if person.custom_tabs.shepherding.woman_shepherd.value %}
+                            {{ person.custom_tabs.shepherding.woman_shepherd }}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endif %}
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+
+</div>
+</body>
+</html>
